@@ -1,3 +1,8 @@
+# Reef Rush
+A codingame game project following the FIRST Robotics 2024-2025 theme "DIVE" for the Robotique CIV robotics club.
+
+---
+
 This project is the skeleton for the creation of a game using the Game Engine Toolkit of [CodinGame](https://codingame.com).
 
 Check the documentation on the [github repository](https://github.com/CodinGame/codingame-sdk-doc).
