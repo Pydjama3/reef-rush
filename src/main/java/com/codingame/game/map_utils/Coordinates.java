@@ -1,7 +1,5 @@
 package com.codingame.game.map_utils;
 
-import com.sun.istack.internal.NotNull;
-
 import java.util.Vector;
 
 public class Coordinates {
@@ -37,7 +35,7 @@ public class Coordinates {
         return new Coordinates(x + dx, y + dy);
     }
 
-    public Coordinates add(@NotNull Coordinates point) {
+    public Coordinates add(Coordinates point) {
         return new Coordinates(
                 x + point.getX(),
                 y + point.getY()
