@@ -72,17 +72,14 @@ public class CellAutomataGenerator implements MapGenerator {
                         } else {
                             nextMap[y][x] = countR1 >= 5 ? 1 : 0;
                         }
+                        /*
+                        if y < WIDTH / 10 and x < WIDTH / 10: (10%)
+                            nextmap[x[y = 0;
+                         */
+
                     }
                 }
             }
-            /*
-            System.out.println(Arrays.deepToString(map)
-                    .replace("], [", "],\n[")
-                    .replace("1", "#")
-                    .replace("0", " ")
-                    + "\n");
-             */
-
             map = nextMap;
         }
         return map;

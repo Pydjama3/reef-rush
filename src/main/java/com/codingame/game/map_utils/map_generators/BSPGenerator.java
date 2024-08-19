@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 public class BSPGenerator implements MapGenerator {
 
-    public static final int MIN_SIZE = 3;
+    public static final int MIN_SIZE = 2;
     private final int DEFAULT_DEPTH_CONST = 4; //TODO: find/set quotient
 
     private int width;
@@ -47,6 +47,7 @@ public class BSPGenerator implements MapGenerator {
     @Override
     public int[][] generate() {
         int[][] map = new int[this.height][this.width];
+
         for (int i = 0; i < map.length; i++) {
             Arrays.fill(map[i], 1);
         }
@@ -58,7 +59,7 @@ public class BSPGenerator implements MapGenerator {
         ArrayList<Leaf> bCurrentLeaves = new ArrayList<>(Collections.singletonList(initSplit[0]));
         ArrayList<Leaf> rCurrentLeaves = new ArrayList<>(Collections.singletonList(initSplit[1]));
 
-        for (int i = 0; i < this.depth; i++) {
+        for (int i = 0; i < depth; i++) {
             ArrayList<Leaf> bNextLeaves = new ArrayList<>();
             ArrayList<Leaf> rNextLeaves = new ArrayList<>();
             for (int j = 0; j < bCurrentLeaves.size(); j++) {

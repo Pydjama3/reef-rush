@@ -2,7 +2,7 @@ package com.codingame.game;
 
 import com.codingame.game.map_utils.MapGenerator;
 import com.codingame.game.map_utils.Tileset;
-import com.codingame.game.map_utils.map_generators.BSPGenerator;
+import com.codingame.game.map_utils.map_generators.CellAutomataGenerator;
 import com.codingame.gameengine.core.AbstractPlayer.TimeoutException;
 import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.MultiplayerGameManager;
@@ -15,6 +15,14 @@ import static com.codingame.game.Constants.VIEWER_HEIGHT;
 import static com.codingame.game.Constants.VIEWER_WIDTH;
 
 public class Referee extends AbstractReferee {
+
+    //TODO: add coral
+    //TODO: setup spawn (see cell automata line ~75) (should be easy)
+    //TODO:
+    //TODO:
+    //TODO:
+
+
     Integer maxOxygenCapacity;
     MapGenerator generator;
     int width;
@@ -24,18 +32,19 @@ public class Referee extends AbstractReferee {
     @Inject
     private GraphicEntityModule graphicEntityModule;
 
+
     @Override
     public void init() {
         // Initialize your game here.
         maxOxygenCapacity = gameManager.getRandom().nextInt(Constants.MAX_OXYGEN_CAPACITY - Constants.MIN_OXYGEN_CAPACITY)
                 + Constants.MIN_OXYGEN_CAPACITY;
 
-        int power = gameManager.getRandom().nextInt(1) + 6;
+        int power = gameManager.getRandom().nextInt(2) + 5;
         width = (int) Math.pow(2, power);
         height = (int) Math.pow(2, power - 1);
 
-        generator = new BSPGenerator();
-//        generator = new CellAutomataGeneration();
+//        generator = new BSPGenerator();
+        generator = new CellAutomataGenerator();
 
         generator.init((int) width, height, new Tileset(), gameManager);
 
@@ -106,7 +115,7 @@ public class Referee extends AbstractReferee {
     @Override
     public void gameTurn(int turn) {
         for (Player player : gameManager.getActivePlayers()) {
-            player.sendInputLine("input");
+            player.sendInputLine("Actual Oxygen: \n" + player.getOxygenLeft());
             player.execute();
         }
 
@@ -122,10 +131,11 @@ public class Referee extends AbstractReferee {
 
     private void updateOxygen() {
         for (Player player : gameManager.getActivePlayers()) {
-            if (player.getPosition().getY() > 0)
+            if (player.getPosition().getY() > 0) {
                 player.changeOxygenLeft(-1);
-            else
-                player.setOxygenLeft(100); //TODO: set to max oxygen
+            } else {
+                player.setOxygenLeft(Constants.MAX_OXYGEN_CAPACITY);
+            }
 
             if (player.getOxygenLeft() < 0) {
                 player.deactivate("The player has drowned");

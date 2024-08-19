@@ -11,6 +11,36 @@ public class Player extends AbstractMultiplayerPlayer {
 
     Coordinates position;
 
+    @Override
+    public int getExpectedOutputLines() {
+        // Returns the number of expected lines of outputs for a player
+        return 1;
+    }
+
+    public Integer getOxygenLeft() {
+        return oxygenLeft;
+    }
+
+    public void setOxygenLeft(Integer quantity) {
+        oxygenLeft = quantity;
+    }
+
+    public void changeOxygenLeft(Integer quantity) {
+        oxygenLeft += quantity;
+    }
+
+    public Coordinates getPosition() {
+        return position;
+    }
+
+    public void setPosition(int x, int y) {
+        position.set(x, y);
+    }
+
+    public void changePosition(Movements movement) {
+        position.add(movement.x, movement.y);
+    }
+
     public enum Movements {
         UP(1, 0, -1),
         RIGHT(2, 1, 0),
@@ -50,37 +80,5 @@ public class Player extends AbstractMultiplayerPlayer {
             return nameOfCode;
         }
 
-    }
-
-    @Override
-    public int getExpectedOutputLines() {
-        // Returns the number of expected lines of outputs for a player
-
-        // TODO: Replace the returned value with a valid number. Most of the time the value is 1. 
-        return 1;
-    }
-
-    public Integer getOxygenLeft() {
-        return oxygenLeft;
-    }
-
-    public void setOxygenLeft(Integer quantity) {
-        oxygenLeft = quantity;
-    }
-
-    public void changeOxygenLeft(Integer quantity) {
-        oxygenLeft += quantity;
-    }
-
-    public Coordinates getPosition() {
-        return position;
-    }
-
-    public void setPosition(int x, int y) {
-        position.set(x, y);
-    }
-
-    public void changePosition(Movements movement) {
-        position.add(movement.x, movement.y);
     }
 }

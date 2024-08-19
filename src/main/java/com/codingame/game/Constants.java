@@ -8,11 +8,10 @@ public class Constants {
     public static final int CELL_SIZE = 128;
     public static final int CELL_OFFSET = CELL_SIZE / 2;
 
-    public static Integer MAX_OXYGEN_CAPACITY = 10;
+    public static Integer MAX_OXYGEN_CAPACITY = 30;
     public static Integer MIN_OXYGEN_CAPACITY = 5;
     public Integer MAX_CORAL_NUM;
     public Integer MIN_CORAL_NUM = 0;
-    public Double WATER_SAND_QUOTIENT = 2 / 3d; // water/sand = 2/3
 
 //    public static final Map<Action, Coord> ACTION_MAP = new HashMap<>();
 //
