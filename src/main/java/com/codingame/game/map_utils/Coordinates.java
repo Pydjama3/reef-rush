@@ -49,4 +49,23 @@ public class Coordinates {
     public int getY() {
         return y;
     }
+
+    public boolean isSuperiorTo(Coordinates pos){
+        return  this.x > pos.x && this.y > pos.y;
+    }
+
+    public double distanceTo(Coordinates pos){
+        return Math.sqrt(
+                Math.pow(this.x - pos.x, 2)
+                + Math.pow(this.y - pos.y, 2)
+        );
+    }
+
+    @Override
+    public String toString() {
+        return "Coordinates{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }
