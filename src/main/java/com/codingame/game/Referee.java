@@ -16,8 +16,6 @@ import static com.codingame.game.Constants.VIEWER_WIDTH;
 
 public class Referee extends AbstractReferee {
 
-    //TODO: add coral
-    //TODO: setup spawn (see cell automata line ~75) (should be easy)
     //TODO:
     //TODO:
     //TODO:
