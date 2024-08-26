@@ -1,5 +1,6 @@
 package com.codingame.game.map_utils.map_generators;
 
+import com.codingame.game.Constants;
 import com.codingame.game.map_utils.Coordinates;
 import com.codingame.game.map_utils.MapFinaliser;
 import com.codingame.game.map_utils.MapGenerator;
@@ -9,11 +10,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.codingame.game.Constants.HOLLOW_VALUE;
+import static com.codingame.game.Constants.WALL_VALUE;
+
 public class BSPGenerator implements MapGenerator {
 
-    public static final int MIN_SIZE = 2;
-    private static final float CORAL_PROBA = 1f / 3;
+    private static final int MIN_SIZE = 2;
+    private static final float CORAL_PROBA = Constants.BASE_CORAL_PROBA;
     private final int DEFAULT_DEPTH_CONST = 4; //TODO: find/set quotient
+
+    private final int MIN_CORRIDOR_LENGTH = 0;
+    private final int MAX_CORRIDOR_LENGTH = 1;
 
     private int width;
     private int height;
@@ -52,7 +59,7 @@ public class BSPGenerator implements MapGenerator {
         int[][] map = new int[this.height][this.width];
 
         for (int i = 0; i < map.length; i++) {
-            Arrays.fill(map[i], 1);
+            Arrays.fill(map[i], WALL_VALUE);
         }
 
         Leaf initLeaf = new Leaf(new Coordinates(0, 0), width, height, null);
@@ -102,11 +109,11 @@ public class BSPGenerator implements MapGenerator {
                 .collect(Collectors.toList());
 
         for (Leaf leaf : allLeaves) {
-            int corridorLength = leaf.position.getY() <= 2 ? 0 : 1;
+            int corridorLength = leaf.position.getY() <= 2 ? MIN_CORRIDOR_LENGTH : MAX_CORRIDOR_LENGTH;
 
             for (int dy = corridorLength; dy < leaf.height - 1; dy++) {
                 for (int dx = 1; dx < leaf.width - 1; dx++) {
-                    map[leaf.position.getY() + dy][leaf.position.getX() + dx] = 0;
+                    map[leaf.position.getY() + dy][leaf.position.getX() + dx] = HOLLOW_VALUE;
                 }
             }
         }
@@ -143,20 +150,20 @@ public class BSPGenerator implements MapGenerator {
                     int x = (int) xStep * t + firstSisterPos.getX();
                     int y = (int) yStep * t + firstSisterPos.getY();
 
-                    map[y][x] = 0;
-                    map[y][width - x - 1] = 0;
+                    map[y][x] = HOLLOW_VALUE;
+                    map[y][width - x - 1] = HOLLOW_VALUE;
 
                     if (Math.abs(xStep) > Math.abs(yStep)) {
-                        map[y + 1][x] = 0;
+                        map[y + 1][x] = HOLLOW_VALUE;
 //                        map[y - 1][x] = 0;
 
-                        map[y + 1][width - x - 1] = 0;
+                        map[y + 1][width - x - 1] = HOLLOW_VALUE;
 //                        map[y - 1][width - x - 1] = 0;
                     } else {
-                        map[y][x + 1] = 0;
+                        map[y][x + 1] = HOLLOW_VALUE;
 //                        map[y][x - 1] = 0;
 
-                        map[y][width - (x + 1) - 1] = 0;
+                        map[y][width - (x + 1) - 1] = HOLLOW_VALUE;
 //                        map[y][width - (x - 1) - 1] = 0;
                     }
                 }

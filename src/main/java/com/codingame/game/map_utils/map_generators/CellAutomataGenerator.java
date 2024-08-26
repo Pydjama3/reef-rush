@@ -1,16 +1,21 @@
 package com.codingame.game.map_utils.map_generators;
 
+import com.codingame.game.Constants;
 import com.codingame.game.map_utils.MapFinaliser;
 import com.codingame.game.map_utils.MapGenerator;
 import com.codingame.game.map_utils.Tileset;
 
 import java.util.Random;
 
+import static com.codingame.game.Constants.HOLLOW_VALUE;
+import static com.codingame.game.Constants.WALL_VALUE;
+
 public class CellAutomataGenerator implements MapGenerator {
 
     private final int DEFAULT_DEPTH = 7;
     private final float INITIAL_PROBA = .45f;
-    private final float CORAL_PROBA = 1f / 3;
+    private final float CORAL_PROBA = Constants.BASE_CORAL_PROBA;
+    private final float STEPS_SEGMENTATION = .6f;
 
     int width;
     int height;
@@ -59,7 +64,7 @@ public class CellAutomataGenerator implements MapGenerator {
                         if (x < width / 2) {
                             float r = gameRandom.nextFloat();
                             if (r <= INITIAL_PROBA)
-                                nextMap[y][x] = 1;
+                                nextMap[y][x] = WALL_VALUE;
                         } else {
                             nextMap[y][x] = nextMap[y][width - x - 1];
                         }
@@ -72,7 +77,7 @@ public class CellAutomataGenerator implements MapGenerator {
                             }
                         }
 
-                        if (i < (depth * .6)) {
+                        if (i < (depth * STEPS_SEGMENTATION)) {
 
                             int countR2 = 0;
                             for (int dy = Math.max(0, y - 2); dy < Math.min(y + 3, height); dy++) {
@@ -81,9 +86,9 @@ public class CellAutomataGenerator implements MapGenerator {
                                 }
                             }
 
-                            nextMap[y][x] = countR1 >= 5 || countR2 <= 2 ? 1 : 0;
+                            nextMap[y][x] = countR1 >= 5 || countR2 <= 2 ? WALL_VALUE : HOLLOW_VALUE;
                         } else {
-                            nextMap[y][x] = countR1 >= 5 ? 1 : 0;
+                            nextMap[y][x] = countR1 >= 5 ? WALL_VALUE : HOLLOW_VALUE;
                         }
                         /*
                         if y < WIDTH / 10 and x < WIDTH / 10: (10%)

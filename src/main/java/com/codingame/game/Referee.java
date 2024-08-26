@@ -2,7 +2,6 @@ package com.codingame.game;
 
 import com.codingame.game.map_utils.MapGenerator;
 import com.codingame.game.map_utils.Tileset;
-import com.codingame.game.map_utils.map_generators.BSPAndCAGenerator;
 import com.codingame.gameengine.core.AbstractPlayer.TimeoutException;
 import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.MultiplayerGameManager;
@@ -11,8 +10,7 @@ import com.google.inject.Inject;
 
 import java.util.List;
 
-import static com.codingame.game.Constants.VIEWER_HEIGHT;
-import static com.codingame.game.Constants.VIEWER_WIDTH;
+import static com.codingame.game.Constants.*;
 
 public class Referee extends AbstractReferee {
 
@@ -37,27 +35,27 @@ public class Referee extends AbstractReferee {
         maxOxygenCapacity = gameManager.getRandom().nextInt(Constants.MAX_OXYGEN_CAPACITY - Constants.MIN_OXYGEN_CAPACITY)
                 + Constants.MIN_OXYGEN_CAPACITY;
 
-        int power = gameManager.getRandom().nextInt(1 /*2*/) + 6;
-        width = (int) Math.pow(2, power);
-        height = (int) Math.pow(2, power - 1);
+        int exponent = gameManager.getRandom().nextInt(MAX_MAP_SIZE_EXPONENT - MIN_MAP_SIZE_EXPONENT)
+                + MIN_MAP_SIZE_EXPONENT;
 
-//        generator = new BSPGenerator();
-//        generator = new CellAutomataGenerator();
-        generator = new BSPAndCAGenerator();
+        width = (int) Math.pow(MAP_IS_POWER_OF, exponent);
+        height = (int) Math.pow(MAP_IS_POWER_OF, exponent - 1);
 
-        generator.init((int) width, height, new Tileset(), gameManager.getRandom(), true);
+        generator = BASE_MAP_GENERATOR;
+
+        generator.init(width, height, new Tileset(), gameManager.getRandom(), PUT_CORAL);
 
         int tileSize = (int) Math.min((double) VIEWER_WIDTH / width, (double) VIEWER_HEIGHT / height);
 
         int[][] map = generator.generate();
 
         String[] underwaterSheet = graphicEntityModule.createSpriteSheetSplitter()
-                .setSourceImage("SpriteSheet.png")
-                .setHeight(128)
-                .setWidth(128)
-                .setName("underwater_sheet")
-                .setImageCount(126)
-                .setImagesPerRow(18)
+                .setSourceImage(MAIN_TS_IMG_SOURCE)
+                .setHeight(MAIN_TS_TILE_SIZE)
+                .setWidth(MAIN_TS_TILE_SIZE)
+                .setName(MAIN_TS_NAME)
+                .setImageCount(MAIN_TS_TILE_COUNT)
+                .setImagesPerRow(MAIN_TS_IMG_PER_ROW)
                 .setOrigCol(0)
                 .setOrigRow(0)
                 .split();
@@ -70,38 +68,36 @@ public class Referee extends AbstractReferee {
          * */
 
         graphicEntityModule.createSprite()
-                .setImage("sea.jpg")
+                .setImage(BG_IMG_SOURCE)
                 .setX(0)
                 .setY(0)
-                .setScale(Math.max(VIEWER_WIDTH / 2048d, VIEWER_HEIGHT / 1536d));
+                .setScale(Math.max((double) VIEWER_WIDTH / BG_WIDTH, (double) VIEWER_HEIGHT / BG_HEIGHT));
 
         for (int y = 0; y < (VIEWER_HEIGHT / tileSize - height) + 1; y++) {
             for (int x = 0; x < width; x++) {
                 graphicEntityModule.createSprite()
-                        .setImage(underwaterSheet[89])
+                        .setImage(underwaterSheet[SKY_INDICES[0]])
                         .setX(x * tileSize)
-                        .setY((int) (y * tileSize - tileSize * 0.7))
-                        .setScale(tileSize / 128d);
+                        .setY((int) (y * tileSize - tileSize * SKY_OFFSET))
+                        .setScale((double) tileSize / MAIN_TS_TILE_SIZE);
             }
         }
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int imgId = -1;
-                if (map[y][x] == 1) {
+                if (map[y][x] == WALL_VALUE) {
                     if (y > 0) {
-                        if (map[y - 1][x] == 0) {
-                            imgId = gameManager.getRandom().nextInt(8) + 2;
+                        if (map[y - 1][x] == HOLLOW_VALUE) {
+                            imgId = SAND_TOP_INDICES[gameManager.getRandom().nextInt(SAND_TOP_INDICES.length)];
                         } else {
-                            imgId = gameManager.getRandom().nextInt(2) * 18
-                                    + gameManager.getRandom().nextInt(2);
+                            imgId = SAND_FILL_INDICES[gameManager.getRandom().nextInt(SAND_FILL_INDICES.length)];
                         }
                     } else {
-                        imgId = gameManager.getRandom().nextInt(8) + 2;
+                        imgId = SAND_TOP_INDICES[gameManager.getRandom().nextInt(SAND_TOP_INDICES.length)];
                     }
-                } else if (map[y][x] == 2) {
-                    imgId = 10 + gameManager.getRandom().nextInt(2) * 18
-                            + gameManager.getRandom().nextInt(8);
+                } else if (map[y][x] == CORAL_VALUE) {
+                    imgId = CORAL_INDICES[gameManager.getRandom().nextInt(CORAL_INDICES.length)];
                 }
 
                 if (imgId != -1)
@@ -109,7 +105,7 @@ public class Referee extends AbstractReferee {
                             .setImage(underwaterSheet[imgId])
                             .setX(x * tileSize)
                             .setY(y * tileSize + (VIEWER_HEIGHT - height * tileSize))
-                            .setScale(tileSize / 128d);
+                            .setScale((double) tileSize / MAIN_TS_TILE_SIZE);
             }
         }
 
@@ -119,18 +115,18 @@ public class Referee extends AbstractReferee {
                 .setSourceImage("Atlantis/Atlantis2_SpriteAnimation.png")
                 .setOrigRow(0)
                 .setOrigCol(0)
-                .setWidth(96)
-                .setHeight(64)
-                .setImageCount(9)
-                .setImagesPerRow(2)
-                .setName("submarine")
+                .setWidth(SUBMARINE_TILE_WIDTH)
+                .setHeight(SUBMARINE_TILE_HEIGHT)
+                .setImageCount(SUBMARINE_TILE_COUNT)
+                .setImagesPerRow(SUBMARINE_IMG_PER_ROW)
+                .setName(SUBMARINE_NAME)
                 .split();
 
         graphicEntityModule.createSprite()
                 .setImage(submarine[0])
                 .setX(0 * tileSize)
                 .setY(0 * tileSize + (VIEWER_HEIGHT - height * tileSize))
-                .setTint(0x0000FF)
+                .setTint(RED_COLOR)
                 .setScaleX(submarineFactor)
                 .setScaleY(submarineFactor);
 
@@ -139,7 +135,7 @@ public class Referee extends AbstractReferee {
                 .setAnchorX(1)
                 .setX((width - 1) * tileSize)
                 .setY(0 * tileSize + (VIEWER_HEIGHT - height * tileSize))
-                .setTint(0xFF0000)
+                .setTint(BLUE_COLOR)
                 .setScaleX(-submarineFactor)
                 .setScaleY(submarineFactor);
     }
