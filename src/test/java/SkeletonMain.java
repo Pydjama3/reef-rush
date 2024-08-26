@@ -16,6 +16,8 @@ public class SkeletonMain {
         /* Multiplayer Game */
         MultiplayerGameRunner gameRunner = new MultiplayerGameRunner();
 
+//        gameRunner.setSeed(0L); // comment line for randomness
+
         // Adds as many player as you need to test your game
         gameRunner.addAgent(Agent1.class);
         gameRunner.addAgent(Agent2.class);

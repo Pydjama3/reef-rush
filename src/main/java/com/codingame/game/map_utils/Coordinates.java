@@ -1,7 +1,5 @@
 package com.codingame.game.map_utils;
 
-import java.util.Vector;
-
 public class Coordinates {
     int x;
     int y;
@@ -15,11 +13,6 @@ public class Coordinates {
      *  /0,3/___/___/3,3/___/
      * /.../___/___/___/.../
      * */
-
-    public enum Axis {
-        X,
-        Y
-    }
 
     public Coordinates(int x, int y) {
         this.x = x;
@@ -50,14 +43,14 @@ public class Coordinates {
         return y;
     }
 
-    public boolean isSuperiorTo(Coordinates pos){
-        return  this.x > pos.x && this.y > pos.y;
+    public boolean isSuperiorTo(Coordinates pos) {
+        return this.x > pos.x && this.y > pos.y;
     }
 
-    public double distanceTo(Coordinates pos){
+    public double distanceTo(Coordinates pos) {
         return Math.sqrt(
                 Math.pow(this.x - pos.x, 2)
-                + Math.pow(this.y - pos.y, 2)
+                        + Math.pow(this.y - pos.y, 2)
         );
     }
 
@@ -67,5 +60,10 @@ public class Coordinates {
                 "x=" + x +
                 ", y=" + y +
                 '}';
+    }
+
+    public enum Axis {
+        X,
+        Y
     }
 }

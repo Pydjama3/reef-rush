@@ -1,50 +1,63 @@
 package com.codingame.game.map_utils.map_generators;
 
-import com.codingame.game.Player;
+import com.codingame.game.map_utils.MapFinaliser;
 import com.codingame.game.map_utils.MapGenerator;
 import com.codingame.game.map_utils.Tileset;
-import com.codingame.gameengine.core.MultiplayerGameManager;
+
+import java.util.Random;
 
 public class CellAutomataGenerator implements MapGenerator {
 
     private final int DEFAULT_DEPTH = 7;
     private final float INITIAL_PROBA = .45f;
+    private final float CORAL_PROBA = 1f / 3;
 
     int width;
     int height;
     boolean isSymmetric;
     Tileset tileset;
-    MultiplayerGameManager<Player> gameManager;
+    Random gameRandom;
     int depth;
+    private boolean putCoral;
 
     public CellAutomataGenerator() {
     }
 
-    public void init(int width, int height, Tileset tileset, MultiplayerGameManager<Player> gameManager, int depth) {
+    public void init(int width, int height, Tileset tileset, Random gameRandom, int depth, boolean putCoral) {
         this.width = width;
         this.height = height;
         this.tileset = tileset;
-        this.gameManager = gameManager;
+        this.gameRandom = gameRandom;
         this.depth = depth;
+        this.putCoral = putCoral;
     }
 
     @Override
-    public void init(int width, int height, Tileset tileset, MultiplayerGameManager<Player> gameManager) {
-        this.init(width, height, tileset, gameManager, DEFAULT_DEPTH);
+    public void init(int width, int height, Tileset tileset, Random gameRandom, boolean putCoral) {
+        this.init(width, height, tileset, gameRandom, DEFAULT_DEPTH, putCoral);
     }
 
-    @Override
-    public int[][] generate() {
-        int[][] map = new int[height][width];
+    public int[][] generate(int[][] initMap) {
+        int[][] map;
 
-        for (int i = -1; i < depth; i++) {
+        if (initMap == null) {
+            map = new int[height][width];
+        } else {
+            if (initMap.length == height && initMap[0].length == width) {
+                map = initMap;
+            } else {
+                throw new RuntimeException("Dimensions of initMap don't correspond to arguments passed in init()");
+            }
+        }
+
+        for (int i = initMap == null ? -1 : 0; i < depth; i++) {
             int[][] nextMap = new int[height][width];
 
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     if (i < 0) {
                         if (x < width / 2) {
-                            float r = gameManager.getRandom().nextFloat();
+                            float r = gameRandom.nextFloat();
                             if (r <= INITIAL_PROBA)
                                 nextMap[y][x] = 1;
                         } else {
@@ -80,8 +93,28 @@ public class CellAutomataGenerator implements MapGenerator {
                     }
                 }
             }
+//            System.out.println(
+//                    Arrays.deepToString(map)
+//                            .replace("], [", "],\n[")
+//                            .replace("0", " ")
+//                            .replace("1", "#")
+//                            + "\n"
+//            );
+
             map = nextMap;
         }
+
+        MapFinaliser.putSpawns(map);
+
+        if (putCoral) {
+            MapFinaliser.putCoral(map, gameRandom, CORAL_PROBA);
+        }
+
         return map;
+    }
+
+    @Override
+    public int[][] generate() {
+        return generate(null);
     }
 }

@@ -2,7 +2,7 @@ package com.codingame.game;
 
 import com.codingame.game.map_utils.MapGenerator;
 import com.codingame.game.map_utils.Tileset;
-import com.codingame.game.map_utils.map_generators.CellAutomataGenerator;
+import com.codingame.game.map_utils.map_generators.BSPAndCAGenerator;
 import com.codingame.gameengine.core.AbstractPlayer.TimeoutException;
 import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.MultiplayerGameManager;
@@ -39,14 +39,15 @@ public class Referee extends AbstractReferee {
         maxOxygenCapacity = gameManager.getRandom().nextInt(Constants.MAX_OXYGEN_CAPACITY - Constants.MIN_OXYGEN_CAPACITY)
                 + Constants.MIN_OXYGEN_CAPACITY;
 
-        int power = gameManager.getRandom().nextInt(2) + 5;
+        int power = gameManager.getRandom().nextInt(1 /*2*/) + 6;
         width = (int) Math.pow(2, power);
         height = (int) Math.pow(2, power - 1);
 
 //        generator = new BSPGenerator();
-        generator = new CellAutomataGenerator();
+//        generator = new CellAutomataGenerator();
+        generator = new BSPAndCAGenerator();
 
-        generator.init((int) width, height, new Tileset(), gameManager);
+        generator.init((int) width, height, new Tileset(), gameManager.getRandom(), true);
 
         int tileSize = (int) Math.min((double) VIEWER_WIDTH / width, (double) VIEWER_HEIGHT / height);
 
@@ -100,6 +101,9 @@ public class Referee extends AbstractReferee {
                     } else {
                         imgId = gameManager.getRandom().nextInt(8) + 2;
                     }
+                } else if (map[y][x] == 2) {
+                    imgId = 10 + gameManager.getRandom().nextInt(2) * 18
+                            + gameManager.getRandom().nextInt(8);
                 }
 
                 if (imgId != -1)
@@ -110,6 +114,36 @@ public class Referee extends AbstractReferee {
                             .setScale(tileSize / 128d);
             }
         }
+
+        double submarineFactor = Math.min((double) tileSize / 96, (double) tileSize / 64);
+
+        String[] submarine = graphicEntityModule.createSpriteSheetSplitter()
+                .setSourceImage("Atlantis/Atlantis2_SpriteAnimation.png")
+                .setOrigRow(0)
+                .setOrigCol(0)
+                .setWidth(96)
+                .setHeight(64)
+                .setImageCount(9)
+                .setImagesPerRow(2)
+                .setName("submarine")
+                .split();
+
+        graphicEntityModule.createSprite()
+                .setImage(submarine[0])
+                .setX(0 * tileSize)
+                .setY(0 * tileSize + (VIEWER_HEIGHT - height * tileSize))
+                .setTint(0x0000FF)
+                .setScaleX(submarineFactor)
+                .setScaleY(submarineFactor);
+
+        graphicEntityModule.createSprite()
+                .setImage(submarine[0])
+                .setAnchorX(1)
+                .setX((width - 1) * tileSize)
+                .setY(0 * tileSize + (VIEWER_HEIGHT - height * tileSize))
+                .setTint(0xFF0000)
+                .setScaleX(-submarineFactor)
+                .setScaleY(submarineFactor);
     }
 
     @Override

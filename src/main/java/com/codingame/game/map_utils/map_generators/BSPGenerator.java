@@ -1,10 +1,9 @@
 package com.codingame.game.map_utils.map_generators;
 
-import com.codingame.game.Player;
 import com.codingame.game.map_utils.Coordinates;
+import com.codingame.game.map_utils.MapFinaliser;
 import com.codingame.game.map_utils.MapGenerator;
 import com.codingame.game.map_utils.Tileset;
-import com.codingame.gameengine.core.MultiplayerGameManager;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -13,34 +12,38 @@ import java.util.stream.Stream;
 public class BSPGenerator implements MapGenerator {
 
     public static final int MIN_SIZE = 2;
+    private static final float CORAL_PROBA = 1f / 3;
     private final int DEFAULT_DEPTH_CONST = 4; //TODO: find/set quotient
 
     private int width;
     private int height;
     private boolean isSymmetric;
     private Tileset tileset;
-    private MultiplayerGameManager<Player> gameManager;
+    private Random gameRandom;
     private int depth;
+    private boolean putCoral;
 
     public BSPGenerator() {
     }
 
-    public void init(int width, int height, Tileset tileset, MultiplayerGameManager<Player> gameManager, int depth) {
+    public void init(int width, int height, Tileset tileset, Random gameRandom, int depth, boolean putCoral) {
         this.width = width;
         this.height = height;
-        this.gameManager = gameManager;
+        this.gameRandom = gameRandom;
         this.depth = depth;
         this.tileset = tileset;
+        this.putCoral = putCoral;
     }
 
     @Override
-    public void init(int width, int height, Tileset tileset, MultiplayerGameManager<Player> gameManager) {
+    public void init(int width, int height, Tileset tileset, Random gameRandom, boolean putCoral) {
         this.init(
                 width,
                 height,
                 tileset,
-                gameManager,
-                (int) (Math.log(Math.min(width, height) / Math.log(2)) + DEFAULT_DEPTH_CONST)
+                gameRandom,
+                (int) (Math.log(Math.min(width, height) / Math.log(2)) + DEFAULT_DEPTH_CONST),
+                putCoral
         );
     }
 
@@ -70,11 +73,11 @@ public class BSPGenerator implements MapGenerator {
                 Leaf[] rSisters;
 
                 if (bCurrentLeaf.getLongestAxis() == Coordinates.Axis.X) {
-                    int cut = gameManager.getRandom().nextInt(bCurrentLeaf.width - 1);
+                    int cut = gameRandom.nextInt(bCurrentLeaf.width - 1);
                     bSisters = bCurrentLeaf.splitX(cut);
                     rSisters = rCureentLeaf.splitX(rCureentLeaf.width - cut);
                 } else {
-                    int cut = gameManager.getRandom().nextInt(bCurrentLeaf.height - 1);
+                    int cut = gameRandom.nextInt(bCurrentLeaf.height - 1);
 
                     bSisters = bCurrentLeaf.splitY(cut);
                     rSisters = rCureentLeaf.splitY(cut);
@@ -99,7 +102,7 @@ public class BSPGenerator implements MapGenerator {
                 .collect(Collectors.toList());
 
         for (Leaf leaf : allLeaves) {
-            int corridorLength = leaf.position.getY() <= 2 ? 0 : gameManager.getRandom().nextInt(3);
+            int corridorLength = leaf.position.getY() <= 2 ? 0 : 1;
 
             for (int dy = corridorLength; dy < leaf.height - 1; dy++) {
                 for (int dx = 1; dx < leaf.width - 1; dx++) {
@@ -108,9 +111,9 @@ public class BSPGenerator implements MapGenerator {
             }
         }
 
-        ArrayList<Leaf> currentLeaves = (ArrayList<Leaf>) allLeaves;
+        ArrayList<Leaf> currentLeaves = bCurrentLeaves;
 
-        while (currentLeaves.size() > 1) {
+        for (int i = 0; i <= depth; i++) {
             ArrayList<Leaf> nextLeaves = new ArrayList<>();
             for (Leaf leaf : currentLeaves) {
 
@@ -141,21 +144,33 @@ public class BSPGenerator implements MapGenerator {
                     int y = (int) yStep * t + firstSisterPos.getY();
 
                     map[y][x] = 0;
-                    map[y][x + 1] = 0;
-                    map[y + 1][x] = 0;
-                    map[y][x - 1] = 0;
-                    map[y - 1][x] = 0;
+                    map[y][width - x - 1] = 0;
+
+                    if (Math.abs(xStep) > Math.abs(yStep)) {
+                        map[y + 1][x] = 0;
+//                        map[y - 1][x] = 0;
+
+                        map[y + 1][width - x - 1] = 0;
+//                        map[y - 1][width - x - 1] = 0;
+                    } else {
+                        map[y][x + 1] = 0;
+//                        map[y][x - 1] = 0;
+
+                        map[y][width - (x + 1) - 1] = 0;
+//                        map[y][width - (x - 1) - 1] = 0;
+                    }
                 }
 
-                if (!nextLeaves.contains(leaf.parent))
-                    nextLeaves.add(leaf.parent);
+                nextLeaves.add(leaf.parent);
             }
             currentLeaves = nextLeaves;
         }
 
-//        for (int x = 0; x < width; x++) {
-//            map[0][x] = 0;
-//        }
+        MapFinaliser.putSpawns(map);
+
+        if (putCoral) {
+            MapFinaliser.putCoral(map, gameRandom, CORAL_PROBA);
+        }
 
         return map;
     }
@@ -218,7 +233,7 @@ public class BSPGenerator implements MapGenerator {
         }
 
         public Leaf[] splitX() {
-            return splitX(gameManager.getRandom().nextInt(width - 1));
+            return splitX(gameRandom.nextInt(width - 1));
         }
 
         public Leaf[] splitY(int yPos) {
@@ -240,7 +255,7 @@ public class BSPGenerator implements MapGenerator {
         }
 
         public Leaf[] splitY() {
-            return this.splitY(gameManager.getRandom().nextInt(height - 1));
+            return this.splitY(gameRandom.nextInt(height - 1));
         }
 
         public int getArea() {
