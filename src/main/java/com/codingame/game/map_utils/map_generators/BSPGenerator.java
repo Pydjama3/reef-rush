@@ -4,7 +4,6 @@ import com.codingame.game.Constants;
 import com.codingame.game.map_utils.Coordinates;
 import com.codingame.game.map_utils.MapFinaliser;
 import com.codingame.game.map_utils.MapGenerator;
-import com.codingame.game.map_utils.Tileset;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,15 +16,13 @@ public class BSPGenerator implements MapGenerator {
 
     private static final int MIN_SIZE = 2;
     private static final float CORAL_PROBA = Constants.BASE_CORAL_PROBA;
-    private final int DEFAULT_DEPTH_CONST = 4; //TODO: find/set quotient
+    private final int DEFAULT_DEPTH_CONST = 4;
 
     private final int MIN_CORRIDOR_LENGTH = 0;
     private final int MAX_CORRIDOR_LENGTH = 1;
 
     private int width;
     private int height;
-    private boolean isSymmetric;
-    private Tileset tileset;
     private Random gameRandom;
     private int depth;
     private boolean putCoral;
@@ -33,21 +30,19 @@ public class BSPGenerator implements MapGenerator {
     public BSPGenerator() {
     }
 
-    public void init(int width, int height, Tileset tileset, Random gameRandom, int depth, boolean putCoral) {
+    public void init(int width, int height, Random gameRandom, int depth, boolean putCoral) {
         this.width = width;
         this.height = height;
         this.gameRandom = gameRandom;
         this.depth = depth;
-        this.tileset = tileset;
         this.putCoral = putCoral;
     }
 
     @Override
-    public void init(int width, int height, Tileset tileset, Random gameRandom, boolean putCoral) {
+    public void init(int width, int height, Random gameRandom, boolean putCoral) {
         this.init(
                 width,
                 height,
-                tileset,
                 gameRandom,
                 (int) (Math.log(Math.min(width, height) / Math.log(2)) + DEFAULT_DEPTH_CONST),
                 putCoral

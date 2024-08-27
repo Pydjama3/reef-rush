@@ -7,9 +7,9 @@ import com.codingame.gameengine.core.AbstractMultiplayerPlayer;
 // public class Player extends AbstractSoloPlayer {
 public class Player extends AbstractMultiplayerPlayer {
 
-    Integer oxygenLeft;
+    private Integer oxygenLeft;
 
-    Coordinates position;
+    private Coordinates position;
 
     @Override
     public int getExpectedOutputLines() {

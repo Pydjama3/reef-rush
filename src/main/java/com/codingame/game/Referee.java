@@ -1,7 +1,6 @@
 package com.codingame.game;
 
 import com.codingame.game.map_utils.MapGenerator;
-import com.codingame.game.map_utils.Tileset;
 import com.codingame.gameengine.core.AbstractPlayer.TimeoutException;
 import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.MultiplayerGameManager;
@@ -19,10 +18,11 @@ public class Referee extends AbstractReferee {
     //TODO:
 
 
-    Integer maxOxygenCapacity;
-    MapGenerator generator;
-    int width;
-    int height;
+    private Integer maxOxygenCapacity;
+    private MapGenerator generator;
+    private int width;
+    private int height;
+
     @Inject
     private MultiplayerGameManager<Player> gameManager;
     @Inject
@@ -43,7 +43,7 @@ public class Referee extends AbstractReferee {
 
         generator = BASE_MAP_GENERATOR;
 
-        generator.init(width, height, new Tileset(), gameManager.getRandom(), PUT_CORAL);
+        generator.init(width, height, gameManager.getRandom(), PUT_CORAL);
 
         int tileSize = (int) Math.min((double) VIEWER_WIDTH / width, (double) VIEWER_HEIGHT / height);
 

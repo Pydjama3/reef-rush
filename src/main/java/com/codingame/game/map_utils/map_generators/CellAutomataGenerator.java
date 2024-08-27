@@ -3,7 +3,6 @@ package com.codingame.game.map_utils.map_generators;
 import com.codingame.game.Constants;
 import com.codingame.game.map_utils.MapFinaliser;
 import com.codingame.game.map_utils.MapGenerator;
-import com.codingame.game.map_utils.Tileset;
 
 import java.util.Random;
 
@@ -12,34 +11,34 @@ import static com.codingame.game.Constants.WALL_VALUE;
 
 public class CellAutomataGenerator implements MapGenerator {
 
+    public static final int FIRST_R1_COUNT = 5;
+    public static final int FIRST_R2_COUNT = 2;
+    public static final int SECOND_R1_COUNT = 5;
     private final int DEFAULT_DEPTH = 7;
     private final float INITIAL_PROBA = .45f;
     private final float CORAL_PROBA = Constants.BASE_CORAL_PROBA;
     private final float STEPS_SEGMENTATION = .6f;
 
-    int width;
-    int height;
-    boolean isSymmetric;
-    Tileset tileset;
-    Random gameRandom;
-    int depth;
+    private int width;
+    private int height;
+    private Random gameRandom;
+    private int depth;
     private boolean putCoral;
 
     public CellAutomataGenerator() {
     }
 
-    public void init(int width, int height, Tileset tileset, Random gameRandom, int depth, boolean putCoral) {
+    public void init(int width, int height, Random gameRandom, int depth, boolean putCoral) {
         this.width = width;
         this.height = height;
-        this.tileset = tileset;
         this.gameRandom = gameRandom;
         this.depth = depth;
         this.putCoral = putCoral;
     }
 
     @Override
-    public void init(int width, int height, Tileset tileset, Random gameRandom, boolean putCoral) {
-        this.init(width, height, tileset, gameRandom, DEFAULT_DEPTH, putCoral);
+    public void init(int width, int height, Random gameRandom, boolean putCoral) {
+        this.init(width, height, gameRandom, DEFAULT_DEPTH, putCoral);
     }
 
     public int[][] generate(int[][] initMap) {
@@ -86,15 +85,10 @@ public class CellAutomataGenerator implements MapGenerator {
                                 }
                             }
 
-                            nextMap[y][x] = countR1 >= 5 || countR2 <= 2 ? WALL_VALUE : HOLLOW_VALUE;
+                            nextMap[y][x] = countR1 >= FIRST_R1_COUNT || countR2 <= FIRST_R2_COUNT ? WALL_VALUE : HOLLOW_VALUE;
                         } else {
-                            nextMap[y][x] = countR1 >= 5 ? WALL_VALUE : HOLLOW_VALUE;
+                            nextMap[y][x] = countR1 >= SECOND_R1_COUNT ? WALL_VALUE : HOLLOW_VALUE;
                         }
-                        /*
-                        if y < WIDTH / 10 and x < WIDTH / 10: (10%)
-                            nextmap[x[y = 0;
-                         */
-
                     }
                 }
             }

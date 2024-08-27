@@ -15,8 +15,8 @@ public class TileMap {
 
     }
 
-    public static TileMap create(int width, int height, Tileset tileset, Random gameRandom, MapGenerator generator) {
-        generator.init(width, height, tileset, gameRandom, true);
+    public static TileMap create(int width, int height, Random gameRandom, MapGenerator generator) {
+        generator.init(width, height, gameRandom, true);
         return new TileMap();
     }
 

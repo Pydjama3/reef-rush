@@ -1,8 +1,8 @@
 package com.codingame.game.map_utils;
 
 public class Coordinates {
-    int x;
-    int y;
+    private int x;
+    private int y;
 
     /*
      *    +--> x
