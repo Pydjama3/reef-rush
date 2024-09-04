@@ -9,9 +9,14 @@ public class MapFinaliser {
 
     public static void putCoral(int[][] map, Random gameRandom, float percent) {
         for (int x = 0; x < map[0].length / 2; x++) {
-            for (int y = 0; y < map.length - 1; y++) {
-                if (map[y][x] == 0 && gameRandom.nextFloat() < percent) {
-                    if (map[y + 1][x] == WALL_VALUE) {
+            for (int y = 0; y < map.length; y++) {
+                if (map[y][x] == HOLLOW_VALUE && gameRandom.nextFloat() < percent) {
+                    if (y < map.length - 1) {
+                        if (map[y + 1][x] == WALL_VALUE) {
+                            map[y][x] = CORAL_VALUE;
+                            map[y][map[0].length - x - 1] = CORAL_VALUE;
+                        }
+                    } else {
                         map[y][x] = CORAL_VALUE;
                         map[y][map[0].length - x - 1] = CORAL_VALUE;
                     }

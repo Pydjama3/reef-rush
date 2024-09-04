@@ -2,14 +2,24 @@ package com.codingame.game;
 
 import com.codingame.game.map_utils.Coordinates;
 import com.codingame.gameengine.core.AbstractMultiplayerPlayer;
+import com.codingame.gameengine.module.entities.Sprite;
 
 // Uncomment the line below and comment the line under it to create a Solo Game
 // public class Player extends AbstractSoloPlayer {
 public class Player extends AbstractMultiplayerPlayer {
 
+    public Sprite sprite;
+    int[] maxMove;
+    int direction = 1;
     private Integer oxygenLeft;
-
     private Coordinates position;
+
+    public Player() {
+        super();
+
+        oxygenLeft = 0;
+        position = new Coordinates(0, 0);
+    }
 
     @Override
     public int getExpectedOutputLines() {
@@ -29,56 +39,74 @@ public class Player extends AbstractMultiplayerPlayer {
         oxygenLeft += quantity;
     }
 
+    public void updateOxygen() {
+        if (position.getY() > 1) {
+            changeOxygenLeft(-1);
+        } else {
+            setOxygenLeft(Constants.MAX_OXYGEN_CAPACITY);
+        }
+    }
+
     public Coordinates getPosition() {
         return position;
+    }
+
+    public void setPosition(Coordinates coordinates) {
+        position = coordinates;
     }
 
     public void setPosition(int x, int y) {
         position.set(x, y);
     }
 
-    public void changePosition(Movements movement) {
-        position.add(movement.x, movement.y);
+    public void changePosition(Move move) {
+        changePosition(new Coordinates(move.x, move.y));
     }
 
-    public enum Movements {
-        UP(1, 0, -1),
-        RIGHT(2, 1, 0),
-        DOWN(3, 0, 1),
-        LEFT(4, -1, 0),
+    public void changePosition(Coordinates displacement) {
+        if (displacement.getX() < 0) {
+            direction = -1;
+        } else if (displacement.getX() > 0) {
+            direction = 1;
+        }
+        position = position.add(displacement);
+    }
 
-        NONE(0, 0, 0),
-        INVALID(-1, -1, -1);
+    public void setMaxMove(int[] maxMove) {
+        this.maxMove = maxMove;
+    }
 
-        final int code;
-        final int x;
-        final int y;
+    public enum Move {
+        UP("up", 0, -1),
+        RIGHT("right", 1, 0),
+        DOWN("down", 0, 1),
+        LEFT("left", -1, 0),
 
-        Movements(int code, int x, int y) {
+        NONE("none", 0, 0),
+        INVALID("-1", -1, -1);
+
+        public final int x;
+        public final int y;
+        public final String code;
+
+        Move(String code, int x, int y) {
             this.code = code;
 
             this.x = x;
             this.y = y;
         }
 
-        public Movements getMovementFromCode(int code) {
-            Movements nameOfCode = INVALID;
+        public static Move getMovementFromCode(String code) {
+            Move nameOfCode = INVALID;
 
-            switch (code) {
-                case 0:
-                    nameOfCode = NONE;
-                case 1:
-                    nameOfCode = UP;
-                case 2:
-                    nameOfCode = RIGHT;
-                case 3:
-                    nameOfCode = DOWN;
-                case 4:
-                    nameOfCode = LEFT;
+            for (Move move : Move.values()) {
+                if (code.equals(move.code)) {
+                    nameOfCode = move;
+                    break;
+                }
             }
 
             return nameOfCode;
         }
-
     }
 }

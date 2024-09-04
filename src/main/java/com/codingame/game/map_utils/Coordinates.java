@@ -35,6 +35,13 @@ public class Coordinates {
         );
     }
 
+    public Coordinates subtract(Coordinates point) {
+        return new Coordinates(
+                x - point.getX(),
+                y - point.getY()
+        );
+    }
+
     public int getX() {
         return x;
     }
@@ -60,6 +67,14 @@ public class Coordinates {
                 "x=" + x +
                 ", y=" + y +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() == Coordinates.class)
+            return ((Coordinates) obj).x == this.x && ((Coordinates) obj).y == this.y;
+        else
+            return super.equals(obj);
     }
 
     public enum Axis {

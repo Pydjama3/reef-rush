@@ -1,3 +1,5 @@
+import com.codingame.game.Player;
+
 import java.util.Random;
 import java.util.Scanner;
 
@@ -6,8 +8,11 @@ public class Agent2 {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            String input = scanner.nextLine();
-            System.out.println("my output");
+            for (int i = 0; i < 6; i++) {
+                String input = scanner.nextLine();
+            }
+
+            System.out.println(Player.Move.values()[new Random().nextInt(5)].code);
         }
     }
 }

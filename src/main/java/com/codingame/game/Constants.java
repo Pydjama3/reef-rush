@@ -5,6 +5,8 @@ import com.codingame.game.map_utils.MapGenerator;
 import com.codingame.game.map_utils.map_generators.BSPAndCAGenerator;
 import com.codingame.gameengine.module.entities.World;
 
+import java.util.function.DoubleFunction;
+
 public class Constants {
     /* --- DISPLAY --- */
     public static final int VIEWER_WIDTH = World.DEFAULT_WIDTH;
@@ -32,8 +34,8 @@ public class Constants {
     /* Submarine */
     public static final String SUBMARINE_IMG_SOURCE = "Atlantis/Atlantis2_SpriteAnimation.png";
     public static final String SUBMARINE_NAME = "submarine";
-    public static final int SUBMARINE_TILE_WIDTH = 128;
-    public static final int SUBMARINE_TILE_HEIGHT = 128;
+    public static final int SUBMARINE_TILE_WIDTH = 96;
+    public static final int SUBMARINE_TILE_HEIGHT = 64;
     public static final int SUBMARINE_TILE_COUNT = 9;
     public static final int SUBMARINE_IMG_PER_ROW = 2;
 
@@ -54,6 +56,11 @@ public class Constants {
 
     public static final Coordinates RELATIVE_SPAWN_POS = new Coordinates(0, 0);
     public static final float BASE_CORAL_PROBA = 1 / 3f;
+
+    public static final int MIN_CORAL = 5;
+    public static final int MAX_CORAL = 20;
+
+    public static final DoubleFunction<Double> CORAL_COUNT_FUNCTION = (x) -> Math.exp(x * Math.log((double) MAX_CORAL / MIN_CORAL)) * MIN_CORAL;
 
 
     /* --- PLAYER --- */
