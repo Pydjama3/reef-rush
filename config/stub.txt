@@ -1,0 +1,8 @@
+gameloop
+read oxygen:int 
+read plasticCount:int 
+
+loop 4 loopline 3 field:word(5)
+
+
+write NONE | UP | RIGHT | DOWN | LEFT

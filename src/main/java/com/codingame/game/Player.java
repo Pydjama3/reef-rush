@@ -100,7 +100,7 @@ public class Player extends AbstractMultiplayerPlayer {
             Move nameOfCode = INVALID;
 
             for (Move move : Move.values()) {
-                if (code.equals(move.code)) {
+                if (code.toLowerCase().equals(move.code)) {
                     nameOfCode = move;
                     break;
                 }

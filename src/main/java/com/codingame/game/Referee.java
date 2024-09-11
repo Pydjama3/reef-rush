@@ -163,6 +163,8 @@ public class Referee extends AbstractReferee {
 
                 player.setMaxMove(maxMove);
 
+
+                // TODO: add submarines to detected objects
                 String furthestObject = furthestInDirection[0] == WALL_VALUE ? "WALL" :
                         (furthestInDirection[0] == CORAL_VALUE ? "CORAL" : "SURFACE");
 
@@ -185,6 +187,7 @@ public class Referee extends AbstractReferee {
             // y-=<block type [coral, wall, none]> <distance>
             // x-=<block type [coral, wall, none]> <distance>
 
+            player.execute();
         }
 //        System.out.println("=> Oxygen left and sonar infos sent !");
 
@@ -200,7 +203,6 @@ public class Referee extends AbstractReferee {
 
 //        System.out.println("Receiving outputs and moving players...");
         for (Player player : gameManager.getActivePlayers()) {
-            player.execute();
             try {
                 List<String> outputs = player.getOutputs();
 
@@ -224,7 +226,7 @@ public class Referee extends AbstractReferee {
 
                 // Check validity of the player output and compute the new game state
             } catch (AbstractPlayer.TimeoutException e) {
-                throw new RuntimeException(e);
+                player.deactivate("The player " + player.getIndex() + " has timed out !");
             }
         }
 //        System.out.println("=> Outputs received and players moved !");
