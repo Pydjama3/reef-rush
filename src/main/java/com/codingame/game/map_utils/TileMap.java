@@ -1,6 +1,7 @@
 package com.codingame.game.map_utils;
 
-import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Random;
 
 import static com.codingame.game.Constants.*;
@@ -12,7 +13,7 @@ public class TileMap {
     private final int[][] simpleMap;
 
     private final int[][] renderedMap;
-    private final HashMap<Coordinates, Integer> coralMap;
+    private final Map<Coordinates, Integer> coralMap;
 
     private final Random gameRandom;
 
@@ -24,12 +25,9 @@ public class TileMap {
         this.height = map.length;
 
         renderedMap = new int[height][width];
-        coralMap = new HashMap<>();
+        coralMap = new Hashtable<>();
 
         setRenderedTilesIndicesAndCoralCounts();
-
-//        System.out.println(coralMap.values());
-//        System.out.println(coralMap.entrySet());
     }
 
     public static TileMap create(int width, int height, Random gameRandom, MapGenerator generator) {
@@ -57,7 +55,6 @@ public class TileMap {
                     if (!coralMap.containsKey(new Coordinates(x, y))) {
 
                         int coral_count = Math.round(CORAL_COUNT_FUNCTION.apply(gameRandom.nextDouble()).floatValue());
-
                         coralMap.put(
                                 new Coordinates(x, y),
                                 coral_count
@@ -79,10 +76,11 @@ public class TileMap {
     }
 
     public int getPlasticCount(Coordinates pos) {
-        Coordinates exPos = (Coordinates) coralMap.keySet().toArray()[0];
-//        System.out.println(exPos);
-//        System.out.println(coralMap.getOrDefault(exPos, 0));
         return coralMap.getOrDefault(pos, 0);
+    }
+
+    public void setPlasticCount(Coordinates pos, int val) {
+        coralMap.put(pos, val);
     }
 
     public int get(Coordinates pos) {
@@ -106,12 +104,12 @@ public class TileMap {
                 && (0 <= (y + (dy * i))) && ((y + (dy * i)) < height)) {
             object = simpleMap[y + dy * i][x + dx * i];
         } else {
-            if (0 <= y + dy * i) {
-                object = -1;
+            if (y + dy * i < 0) {
+                object = SURFACE_VALUE;
             }
         }
 
-        return new int[]{object, i};
+        return new int[]{object, i - 1};
     }
 
     public Coordinates[] getCoralPos() {

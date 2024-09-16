@@ -17,7 +17,7 @@ public class Constants {
     public static final String MAIN_TS_IMG_SOURCE = "SpriteSheet.png";
     public static final String MAIN_TS_NAME = "underwater_sheet";
     public static final int MAIN_TS_TILE_SIZE = 128;
-    public static final int MAIN_TS_TILE_COUNT = 126;
+    public static final int MAIN_TS_TILE_COUNT = 90;
     public static final int MAIN_TS_IMG_PER_ROW = 18;
 
     public static final int[] SAND_FILL_INDICES = new int[]{0, 1, 18, 19};
@@ -53,6 +53,8 @@ public class Constants {
     public static final int HOLLOW_VALUE = 0;   // should stay 0 :)
     public static final int WALL_VALUE = 1;
     public static final int CORAL_VALUE = 2;
+    public static final int SUBMARINE_VALUE = 3;
+    public static final int SURFACE_VALUE = -1;
 
     public static final Coordinates RELATIVE_SPAWN_POS = new Coordinates(0, 0);
     public static final float BASE_CORAL_PROBA = 1 / 3f;

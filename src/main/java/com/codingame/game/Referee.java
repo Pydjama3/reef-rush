@@ -3,14 +3,21 @@ package com.codingame.game;
 import com.codingame.game.map_utils.Coordinates;
 import com.codingame.game.map_utils.MapGenerator;
 import com.codingame.game.map_utils.TileMap;
+import com.codingame.gameengine.core.AbstractMultiplayerPlayer;
 import com.codingame.gameengine.core.AbstractPlayer;
 import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.MultiplayerGameManager;
+import com.codingame.gameengine.module.endscreen.EndScreenModule;
+import com.codingame.gameengine.module.entities.BufferedGroup;
 import com.codingame.gameengine.module.entities.Curve;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
+import com.codingame.gameengine.module.entities.Text;
 import com.google.inject.Inject;
 
+import java.awt.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.codingame.game.Constants.*;
 
@@ -27,18 +34,23 @@ public class Referee extends AbstractReferee {
     private String[] underwaterSheet;
     private String[] submarineSheet;
 
+    private Map<Coordinates, Text> coralValues;
+
 
     @Inject
     private MultiplayerGameManager<Player> gameManager;
     @Inject
     private GraphicEntityModule graphicEntityModule;
+    @Inject
+    private EndScreenModule endScreenModule;
 
 
     @Override
     public void init() {
         // Initialize your game here.
-        maxOxygenCapacity = gameManager.getRandom().nextInt(Constants.MAX_OXYGEN_CAPACITY - Constants.MIN_OXYGEN_CAPACITY)
-                + Constants.MIN_OXYGEN_CAPACITY;
+        maxOxygenCapacity = MAX_OXYGEN_CAPACITY;
+//        maxOxygenCapacity = gameManager.getRandom().nextInt(Constants.MAX_OXYGEN_CAPACITY - Constants.MIN_OXYGEN_CAPACITY)
+//                + Constants.MIN_OXYGEN_CAPACITY;
 
         int exponent = gameManager.getRandom().nextInt(MAX_MAP_SIZE_EXPONENT - MIN_MAP_SIZE_EXPONENT)
                 + MIN_MAP_SIZE_EXPONENT;
@@ -48,7 +60,7 @@ public class Referee extends AbstractReferee {
 
         generator = BASE_MAP_GENERATOR;
 
-        tileMap = TileMap.create(width, height, gameManager.getRandom(), generator /*BASE_MAP_GENERATOR*/);
+        tileMap = TileMap.create(width, height, gameManager.getRandom(), generator);
 
         tileSize = (int) Math.min((double) VIEWER_WIDTH / width, (double) VIEWER_HEIGHT / height);
 
@@ -108,6 +120,9 @@ public class Referee extends AbstractReferee {
                     .setY(player.getPosition().getY() * tileSize + (VIEWER_HEIGHT - height * tileSize))
                     .setZIndex(1);
 
+            player.infos = graphicEntityModule.createText()
+                    .setAnchor(-1);
+
             //TODO: change depending on teams/individual
             i += 1;
             y = i / 2;
@@ -122,56 +137,73 @@ public class Referee extends AbstractReferee {
 
     @Override
     public void gameTurn(int turn) {
+//        System.out.println("--- TURN " + turn + " ---");
 
-        // send oxygen (input)
-        // send sonnar (input)
-        // recevoir deplacement (output)
-        // compute coraux (auto)
-        // update oxygen
-        // RENDER
-        // Win condition
+        Player player = gameManager.getPlayer(turn % gameManager.getPlayerCount());
+        if (!player.isActive())
+            return;
 
+//        player.sendInputLine(input);
+//        player.execute();
 
         /* SEND OXYGEN + SONAR */
-//        System.out.println("Sending oxygen left and sonar infos to players...");
-
         String[] prefix = new String[]{"y+", "x+", "y-", "x-"};
 
-        for (Player player : gameManager.getActivePlayers()) {
-            //OXYGEN LEVEL
-            player.sendInputLine(player.getOxygenLeft().toString());
+//        for (Player player : gameManager.getActivePlayers()) {
+//            System.out.println("> Player " + player.getIndex());
+        //OXYGEN LEVEL
+        player.sendInputLine(player.getOxygenLeft().toString());
+//            System.out.println(player.getOxygenLeft().toString());
 
-            //PLASTIC COUNT
-            player.sendInputLine(Integer.toString(tileMap.getPlasticCount(player.getPosition())));
+        //PLASTIC COUNT
+        player.sendInputLine(Integer.toString(tileMap.getPlasticCount(player.getPosition())));
+//            System.out.println(tileMap.getPlasticCount(player.getPosition()));
 
-            // SONAR
-            int[] dxs = new int[]{0, 1, 0, -1};
-            int[] dys = new int[]{-1, 0, 1, 0};
+        // SONAR
+        int[] dxs = new int[]{0, 1, 0, -1};
+        int[] dys = new int[]{-1, 0, 1, 0};
 
-            int[] maxMove = new int[prefix.length];
+        int[] maxMove = new int[prefix.length];
 
-            for (int i = 0; i < prefix.length; i++) {
-                int[] furthestInDirection = tileMap.getFurthestInDirection(player.getPosition(), dxs[i], dys[i]);
+        for (int i = 0; i < prefix.length; i++) {
+            int[] furthestInDirection = tileMap.getFurthestInDirection(player.getPosition(), dxs[i], dys[i]);
 
-                if (furthestInDirection[0] == WALL_VALUE) {
-                    if (furthestInDirection[1] <= 1) {
-                        maxMove[i] = 0;
-                    } else {
-                        maxMove[i] = 1;
+            for (Player otherPlayer : gameManager.getPlayers()) {
+                if (otherPlayer == player)
+                    continue;
+
+                Coordinates otherPlayerPosition = otherPlayer.getPosition();
+                Coordinates playerPosition = player.getPosition();
+
+                if (playerPosition.getX() == otherPlayerPosition.getX() || playerPosition.getY() == otherPlayerPosition.getY()) {
+                    double distance = playerPosition.distanceTo(otherPlayerPosition);
+                    if (distance < furthestInDirection[1]) {
+                        furthestInDirection[0] = SUBMARINE_VALUE;
+                        furthestInDirection[1] = (int) distance;
                     }
                 }
-
-                player.setMaxMove(maxMove);
-
-
-                // TODO: add submarines to detected objects
-                String furthestObject = furthestInDirection[0] == WALL_VALUE ? "WALL" :
-                        (furthestInDirection[0] == CORAL_VALUE ? "CORAL" : "SURFACE");
-
-                player.sendInputLine(
-                        prefix[i] + "=" + furthestObject + "(" + furthestInDirection[1] + "m)"
-                );
             }
+
+            if (furthestInDirection[0] == WALL_VALUE || furthestInDirection[0] == SUBMARINE_VALUE || furthestInDirection[0] == SURFACE_VALUE) {
+                if (furthestInDirection[1] == 0) {
+                    maxMove[i] = 0;
+                } else {
+                    maxMove[i] = 1;
+                }
+            }
+
+            player.setMaxMove(maxMove);
+
+
+            String furthestObject = furthestInDirection[0] == WALL_VALUE ? "WALL" :
+                    furthestInDirection[0] == SUBMARINE_VALUE ? "SUBMARINE" :
+                            furthestInDirection[0] == CORAL_VALUE ? "CORAL" : "SURFACE";
+
+            player.sendInputLine(
+                    prefix[i] + "=" + furthestObject + "(" + furthestInDirection[1] + "m)"
+            );
+//                System.out.println(prefix[i] + "=" + furthestObject + "(" + furthestInDirection[1] + "m)");
+//            }
 
             /* Sonnar:
              *    1
@@ -187,66 +219,54 @@ public class Referee extends AbstractReferee {
             // y-=<block type [coral, wall, none]> <distance>
             // x-=<block type [coral, wall, none]> <distance>
 
-            player.execute();
-        }
-//        System.out.println("=> Oxygen left and sonar infos sent !");
-
-
-//        System.out.println("Executing players...");
-//        for (Player player : gameManager.getActivePlayers()) {
 //            player.execute();
+        }
+
+//        for (Player player : gameManager.getActivePlayers()) {
+        player.execute();
 //        }
-//        System.out.println("=> Players executed !");
 
 
         /* RECEVOIR OUTPUTS + DEPLACER JOUEURS */
 
-//        System.out.println("Receiving outputs and moving players...");
-        for (Player player : gameManager.getActivePlayers()) {
-            try {
-                List<String> outputs = player.getOutputs();
-
-//                System.out.println(player.getIndex() + ": " + Arrays.toString(player.maxMove));
-
-                Player.Move playerMove = Player.Move.getMovementFromCode(outputs.get(0));
-                if (playerMove != Player.Move.INVALID) {
-                    int dx = Math.max(-player.maxMove[3], Math.min(playerMove.x, player.maxMove[1]));
-                    int dy = Math.max(-player.maxMove[0], Math.min(playerMove.y, player.maxMove[2]));
-
-                    player.changePosition(new Coordinates(dx, dy));
-                }
-
-                player.updateOxygen();
-
-                if (player.getOxygenLeft() < 0) {
-                    player.deactivate("The player " + player.getIndex() + " has drowned !");
-                }
-
-                renderPlayer(player);
-
-                // Check validity of the player output and compute the new game state
-            } catch (AbstractPlayer.TimeoutException e) {
-                player.deactivate("The player " + player.getIndex() + " has timed out !");
-            }
-        }
-//        System.out.println("=> Outputs received and players moved !");
-
-//
-//        /* COMPUTE CORAUX + UPDATE OXYGEN + (WIN CONDITION) */
-//
-////        System.out.println("Updating corals and players oxygen levels...");
 //        for (Player player : gameManager.getActivePlayers()) {
-//            player.updateOxygen();
-//
-//            if (player.getOxygenLeft() < 0) {
-//                player.deactivate("The player " + player.getIndex() + " has drowned !");
-//            }
+//            System.out.println("> Player " + player.getIndex());
+        try {
+            List<String> outputs = player.getOutputs();
+
+            Player.Move playerMove = Player.Move.getMovementFromCode(outputs.get(0));
+            if (playerMove != Player.Move.INVALID) {
+                int dx = Math.max(-player.maxMove[3], Math.min(playerMove.x, player.maxMove[1]));
+                int dy = Math.max(-player.maxMove[0], Math.min(playerMove.y, player.maxMove[2]));
+
+                player.changePosition(new Coordinates(dx, dy));
+            }
+
+            player.updateOxygen();
+
+            if (player.getOxygenLeft() < 0) {
+                player.setScore(-1);
+                player.deactivate("The player " + player.getIndex() + " has drowned !");
+            }
+
+            int plasticAtPlayer = tileMap.getPlasticCount(player.getPosition());
+            if (plasticAtPlayer > 0) {
+                tileMap.setPlasticCount(player.getPosition(), plasticAtPlayer - 1);
+                player.setScore(player.getScore() + 1);
+            }
+
+            renderPlayer(player);
+            updateCorals();
+
+            // Check validity of the player output and compute the new game state
+        } catch (AbstractPlayer.TimeoutException e) {
+            player.deactivate("The player " + player.getIndex() + " has timed out !");
+        }
 //        }
-////        System.out.println("=> Corals and players oxygen levels updated !");
 
-//        renderPlayers();
-
-//        graphicEntityModule.commitWorldState(1);
+        if (gameManager.getActivePlayers().size() <= 1) {
+            gameManager.endGame();
+        }
     }
 
     private void renderMap() {
@@ -269,19 +289,21 @@ public class Referee extends AbstractReferee {
     private void renderPlayer(Player player) {
         Coordinates playerPos = player.getPosition();
 
-//        System.out.println(playerPos);
-//        System.out.println(new Coordinates(player.sprite.getX(), player.sprite.getY()));
-
         player.sprite
                 .setScaleX(submarineFactor * player.direction)
                 .setX(playerPos.getX() * tileSize, Curve.EASE_IN)
-                .setY(playerPos.getY() * tileSize + (VIEWER_HEIGHT - height * tileSize), Curve.LINEAR);
+                .setY(playerPos.getY() * tileSize + (VIEWER_HEIGHT - height * tileSize), Curve.EASE_IN);
 
         if (player.direction < 0) {
             player.sprite.setAnchorX(1);
         } else {
             player.sprite.setAnchorX(0);
         }
+
+        player.infos.setText(Integer.toString(player.getOxygenLeft()))
+                .setFillColor(player.getColorToken())
+                .setX(playerPos.getX() * tileSize, Curve.EASE_IN)
+                .setY(playerPos.getY() * tileSize + (VIEWER_HEIGHT - height * tileSize), Curve.EASE_IN);
     }
 
     private void renderPlayers() {
@@ -290,16 +312,44 @@ public class Referee extends AbstractReferee {
         }
     }
 
-    private void renderCorals() {
-        for (Coordinates pos : tileMap.getCoralPos()) {
-            int x = pos.getX();
-            int y = pos.getY();
+    private void updateCorals() {
+        for (Coordinates coralPos : tileMap.getCoralPos()) {
+            int plasticCount = tileMap.getPlasticCount(coralPos);
 
-            graphicEntityModule.createText(Integer.toString(tileMap.getPlasticCount(pos)))
-                    .setX(x * tileSize)
-                    .setY(y * tileSize + (VIEWER_HEIGHT - height * tileSize))
-                    .setStrokeColor(RED_COLOR)
-                    .setZIndex(0);
+            Color color = new Color((int) (255 * ((double) plasticCount / MAX_CORAL)), (int) (255 * (1 - (double) plasticCount / MAX_CORAL)), 0);
+            int rgb = (color.getRGB() - (0xFF << 24));
+
+            coralValues.put(
+                    coralPos,
+                    coralValues.get(coralPos)
+                            .setText(String.valueOf(plasticCount))
+                            .setFillColor(rgb)
+            );
+        }
+    }
+
+
+    private void renderCorals() {
+        coralValues = new HashMap<Coordinates, Text>();
+
+        for (Coordinates coralPos : tileMap.getCoralPos()) {
+            int x = coralPos.getX();
+            int y = coralPos.getY();
+
+            int plasticCount = tileMap.getPlasticCount(coralPos);
+
+            Color color = new Color((int) (255 * ((double) plasticCount / MAX_CORAL)), (int) (255 * (1 - (double) plasticCount / MAX_CORAL)), 0);
+            int rgb = (color.getRGB() - (0xFF << 24));
+
+
+            coralValues.put(
+                    coralPos,
+                    graphicEntityModule.createText(Integer.toString(plasticCount))
+                            .setX(x * tileSize)
+                            .setY(y * tileSize + (VIEWER_HEIGHT - height * tileSize))
+                            .setFillColor(rgb)
+                            .setZIndex(0)
+            );
         }
     }
 
@@ -311,15 +361,24 @@ public class Referee extends AbstractReferee {
                 .setScale(Math.max((double) VIEWER_WIDTH / BG_WIDTH, (double) VIEWER_HEIGHT / BG_HEIGHT))
                 .setZIndex(-1);
 
+        BufferedGroup skyGroup = graphicEntityModule.createBufferedGroup();
+
         for (int y = 0; y < (VIEWER_HEIGHT / tileSize - height) + 1; y++) {
             for (int x = 0; x < width; x++) {
-                graphicEntityModule.createSprite()
-                        .setImage(underwaterSheet[SKY_INDICES[0]])
-                        .setX(x * tileSize)
-                        .setY((int) (y * tileSize - tileSize * SKY_OFFSET))
-                        .setScale((double) tileSize / MAIN_TS_TILE_SIZE)
-                        .setZIndex(0);
+                skyGroup.add(
+                        graphicEntityModule.createSprite()
+                                .setImage(underwaterSheet[SKY_INDICES[0]])
+                                .setX(x * tileSize)
+                                .setY((int) (y * tileSize - tileSize * SKY_OFFSET))
+                                .setScale((double) tileSize / MAIN_TS_TILE_SIZE)
+                                .setZIndex(0)
+                );
             }
         }
+    }
+
+    @Override
+    public void onEnd() {
+        endScreenModule.setScores(gameManager.getPlayers().stream().mapToInt(AbstractMultiplayerPlayer::getScore).toArray());
     }
 }

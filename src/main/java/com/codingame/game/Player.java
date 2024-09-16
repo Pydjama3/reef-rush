@@ -3,12 +3,15 @@ package com.codingame.game;
 import com.codingame.game.map_utils.Coordinates;
 import com.codingame.gameengine.core.AbstractMultiplayerPlayer;
 import com.codingame.gameengine.module.entities.Sprite;
+import com.codingame.gameengine.module.entities.Text;
 
 // Uncomment the line below and comment the line under it to create a Solo Game
 // public class Player extends AbstractSoloPlayer {
 public class Player extends AbstractMultiplayerPlayer {
 
     public Sprite sprite;
+    public Text infos;
+
     int[] maxMove;
     int direction = 1;
     private Integer oxygenLeft;
@@ -40,7 +43,7 @@ public class Player extends AbstractMultiplayerPlayer {
     }
 
     public void updateOxygen() {
-        if (position.getY() > 1) {
+        if (position.getY() > 0) {
             changeOxygenLeft(-1);
         } else {
             setOxygenLeft(Constants.MAX_OXYGEN_CAPACITY);

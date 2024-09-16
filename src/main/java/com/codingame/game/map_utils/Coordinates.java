@@ -61,6 +61,10 @@ public class Coordinates {
         );
     }
 
+    public int[] toArray() {
+        return new int[]{this.x, this.y};
+    }
+
     @Override
     public String toString() {
         return "Coordinates{" +
@@ -75,6 +79,11 @@ public class Coordinates {
             return ((Coordinates) obj).x == this.x && ((Coordinates) obj).y == this.y;
         else
             return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return x < y ? (y * y) + x : (x * x) + x + y;
     }
 
     public enum Axis {
