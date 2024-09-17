@@ -66,6 +66,6 @@ public class Constants {
 
 
     /* --- PLAYER --- */
-    public static Integer MAX_OXYGEN_CAPACITY = 30;
+    public static Integer MAX_OXYGEN_CAPACITY = 42;
     public static Integer MIN_OXYGEN_CAPACITY = 5;
 }

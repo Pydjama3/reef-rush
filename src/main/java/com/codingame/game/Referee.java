@@ -143,21 +143,14 @@ public class Referee extends AbstractReferee {
         if (!player.isActive())
             return;
 
-//        player.sendInputLine(input);
-//        player.execute();
-
         /* SEND OXYGEN + SONAR */
         String[] prefix = new String[]{"y+", "x+", "y-", "x-"};
 
-//        for (Player player : gameManager.getActivePlayers()) {
-//            System.out.println("> Player " + player.getIndex());
         //OXYGEN LEVEL
         player.sendInputLine(player.getOxygenLeft().toString());
-//            System.out.println(player.getOxygenLeft().toString());
 
         //PLASTIC COUNT
         player.sendInputLine(Integer.toString(tileMap.getPlasticCount(player.getPosition())));
-//            System.out.println(tileMap.getPlasticCount(player.getPosition()));
 
         // SONAR
         int[] dxs = new int[]{0, 1, 0, -1};
@@ -202,10 +195,8 @@ public class Referee extends AbstractReferee {
             player.sendInputLine(
                     prefix[i] + "=" + furthestObject + "(" + furthestInDirection[1] + "m)"
             );
-//                System.out.println(prefix[i] + "=" + furthestObject + "(" + furthestInDirection[1] + "m)");
-//            }
 
-            /* Sonnar:
+            /* Sonar:
              *    1
              *  4   2
              *    3
@@ -218,19 +209,13 @@ public class Referee extends AbstractReferee {
             // x+=<block type [coral, wall, none]> <distance>
             // y-=<block type [coral, wall, none]> <distance>
             // x-=<block type [coral, wall, none]> <distance>
-
-//            player.execute();
         }
 
-//        for (Player player : gameManager.getActivePlayers()) {
         player.execute();
-//        }
 
 
         /* RECEVOIR OUTPUTS + DEPLACER JOUEURS */
 
-//        for (Player player : gameManager.getActivePlayers()) {
-//            System.out.println("> Player " + player.getIndex());
         try {
             List<String> outputs = player.getOutputs();
 
@@ -262,7 +247,6 @@ public class Referee extends AbstractReferee {
         } catch (AbstractPlayer.TimeoutException e) {
             player.deactivate("The player " + player.getIndex() + " has timed out !");
         }
-//        }
 
         if (gameManager.getActivePlayers().size() <= 1) {
             gameManager.endGame();

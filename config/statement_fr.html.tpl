@@ -1,0 +1,171 @@
+<div class="statement_back" id="statement_back" style="display:none"></div>
+<div class="statement-body">
+    <!-- GOAL -->
+    <div class="statement-section statement-goal">
+        <h1>
+            <span class="icon icon-goal">&nbsp;</span>
+            <span>Le But</span>
+        </h1>
+        <div class="statement-goal-content">
+            Le but de ce jeu est de gagner.
+            <br>
+            <br>
+            Pour cela, vous devrez contrôler un sous-marin pour collecter les déchets plastiques sur les coraux. Attention à ne pas vous noyer !
+        </div>
+    </div>
+    <!-- RULES -->
+    <div class="statement-section statement-rules">
+        <h1>
+            <span class="icon icon-rules">&nbsp;</span>
+            <span>Règles</span>
+        </h1>
+        <div>
+            <div class="statement-rules-content">
+                Le jeu se joue tour par tour.
+                <br>
+                <br>
+                Votre programme reçoit 3 informations différentes :
+                <ul>
+                    <li>Votre niveau d'oxygène actuel</li>
+                    <li>La quantité de déchets plastiques à votre poste</li>
+                    <li>La sortie du sonar à bord de votre sous-marin</li>
+                </ul>
+                <br>
+                En réponse à ces informations, vous <b>devrez</b> émettre une commande: none (equivalent of no command), up, right, down, or left.
+                <br>
+                <br>
+                The game zone works as follows:
+                <ul>
+                    <li>L'élément principal du jeu est la carte générée de manière procédurale dans laquelle les joueurs peuvent évoluer</li>
+                    <li>La carte est une carte de tuiles 2D composée de blocs/entités solides (murs de sable, sous-marins, surface de l'eau) et de blocs creux (eau, coraux).</li>
+                    <li>La taille de la carte n'est pas donnée au début du jeu</li>
+                    <li>La carte est toujours symmétrique</li>
+                </ul>
+                <br>
+                Le sous-marin fonctionne comme suit :
+                <ul>
+                    <li>Ils se déplacent et ne peuvent pas traverser d'autres sous-marins</li>
+                    <li>Ils collectent automatiquement les déchets plastiques s'il y en a à leur poste</li>
+                    <li>Ils reconstituent automatiquement leur capacité en oxygène lorsqu'ils sont à la surface</li>
+                </ul>
+                Vous <strong>perdez</strong> si :
+                <ul>
+                    <li>Vous vous trompez.</li>
+                    <li>Vous ne fournissez pas une séquence d'actions valide.</li>
+                    <li>Vous vous noyez (oxygene &lt; 0)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- EXPERT RULES -->
+    <div class="statement-section statement-expertrules">
+        <h1>
+            <span class="icon icon-expertrules">&nbsp;</span>
+            <span>Régles avancées</span>
+        </h1>
+        <div class="statement-expert-rules-content">
+            Si vous comptez exécuter des simulations locales, vous devez le savoir !
+        </div>
+    </div>
+    <!-- EXAMPLES -->
+    <div class="statement-section statement-examples">
+        <h1>
+            <span class="icon icon-example">&nbsp;</span>
+            <span>Exemple</span>
+        </h1>
+
+        <div class="statement-examples-text">
+            //TODO<br>
+            A basic situation, an instruction, a result.
+        </div>
+
+    </div>
+    <!-- WARNING -->
+    <div class="statement-section statement-warning">
+        <h1>
+            <span class="icon icon-warning">&nbsp;</span>
+            <span>Note</span>
+        </h1>
+        <div class="statement-warning-content">
+            <b>N'oubliez pas de lancer les tests en les lançant depuis la fenêtre « Cas de tests »</b>. Vous pouvez soumettre à tout moment
+            temps
+            pour recevoir un score contre les validateurs de formation. <b>Vous pouvez soumettre autant de fois que vous le souhaitez</b>. Ton
+            la plupart
+            la soumission récente sera utilisée pour le classement final.<br>
+            <br>
+            <strong>Attention :</strong> les tests de validation utilisés pour calculer la note finale ne sont pas les mêmes que ceux
+            utilisé
+            pendant l'événement.
+            Les solutions Harcoded n'obtiendront pas de bons résultats.<br>
+            <br>
+            N'hésitez pas à modifier les options du visualiseur pour vous aider à déboguer votre code (<img
+                height="18"
+                src="https://www.codingame.com/servlet/fileservlet?id=3463235186409"
+                style="opacity:.8;background:#20252a;" width="18">).
+        </div>
+    </div>
+    <!-- PROTOCOL -->
+    <div class="statement-section statement-protocol">
+        <h1>
+            <span class="icon icon-protocol">&nbsp;</span>
+            <span>Entrée du jeu</span>
+        </h1>
+        <!-- Protocol block -->
+        <div class="blk">
+            <div class="text">Le programme doit d'abord lire les données d'initialisation à partir de l'entrée standard. Ensuite, fournissez à
+                le
+                sortie standard une ligne avec une commande (détaillée ci-dessous).
+            </div>
+        </div>
+
+        <!-- Protocol block -->
+        <div class="blk">
+            <div class="title">Input</div>
+            <div class="text">
+                <p><span class="statement-lineno">Ligne 1 : </span>un int <var>oxygène</var>, le courant</p>
+                <p><span class="statement-lineno">Ligne 2 : </span>un int <var>plasticCount</var>, la quantité de plastique à la position du sous-marin</p>
+                <p><span class="statement-lineno"><i>Puis 4 lignes pour le sonar</i></span></p>
+                <p><span class="statement-lineno">Ligne 3 : </span>une chaîne de charactères <var>y+</var>, formatée de cette façon : <i>y+=[WALL | SUBMARINE | CORAL | SURFACE]([0-2⁷]m)</i></p>
+                <p><span class="statement-lineno">Ligne 4 : </span>une chaîne de charactères <var>x+</var>, formatée de cette façon : <i>x+=[WALL | SUBMARINE | CORAL | SURFACE]([0-2⁷]m)</i></p>
+                <p><span class="statement-lineno">Ligne 5 : </span>une chaîne de charactères <var>y-</var>, formatée de cette façon : <i>y-=[WALL | SUBMARINE | CORAL | SURFACE]([0-2⁷]m)</i></p>
+                <p><span class="statement-lineno">Ligne 6 : </span>une chaîne de charactères <var>x-</var>, formatée de cette façon : <i>x-=[WALL | SUBMARINE | CORAL | SURFACE]([0-2⁷]m)</i></p>
+            </div>
+        </div>
+
+        <!-- Protocol block -->
+        <div class="blk">
+            <div class="title">Output</div>
+            <div class="text">
+                <p><span class="statement-lineno">Une seule ligne</span> contenant l'une des commandes suivantes (non sensible à la casse) : NONE, UP, RIGHT, DOWN ou LEFT.
+                <br><p>
+                <br>
+            </div>
+        </div>
+
+        <!-- Protocol block -->
+        <div class="blk">
+            <div class="title">Constraints</div>
+            <const>0</const> ≤ <var>oxygene</var> ≤ <const>42</const><br>
+                <const>0</const> ≤ <var>plasticCount</var> ≤ <const>20</const><br>
+                <const>13</const> ≤ <var>{y+|x+|y-|x-} </var> ≤ <const>18</const><br>
+                <const>0</const> ≤ <var>distance</var> ≤ <const>2⁷</const><br>
+                <br>Temps de réponse alloué à la sortie
+                est ≤
+                <const>2</const>
+                secondes.
+        </div>
+    </div>
+    <!-- STORY -->
+    <div class="statement-story-background">
+        <div class="statement-story-cover"
+             style="background-size: cover; background-image: url(https://www.codingame.com/servlet/fileservlet?id=2210505809934)">
+            <div class="statement-story">
+                <h1>Title</h1>
+                <div class="story-text">Story
+                    <br>
+                    Totally optional
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
