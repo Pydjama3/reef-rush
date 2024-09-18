@@ -49,10 +49,8 @@ public class Referee extends AbstractReferee {
     public void init() {
         // Initialize your game here.
         maxOxygenCapacity = MAX_OXYGEN_CAPACITY;
-//        maxOxygenCapacity = gameManager.getRandom().nextInt(Constants.MAX_OXYGEN_CAPACITY - Constants.MIN_OXYGEN_CAPACITY)
-//                + Constants.MIN_OXYGEN_CAPACITY;
 
-        int exponent = gameManager.getRandom().nextInt(MAX_MAP_SIZE_EXPONENT - MIN_MAP_SIZE_EXPONENT)
+        int exponent = (gameManager.getLeagueLevel() - 1) /*gameManager.getRandom().nextInt(MAX_MAP_SIZE_EXPONENT - MIN_MAP_SIZE_EXPONENT)*/
                 + MIN_MAP_SIZE_EXPONENT;
 
         width = (int) Math.pow(MAP_IS_POWER_OF, exponent);
@@ -118,9 +116,10 @@ public class Referee extends AbstractReferee {
                     .setScaleY(submarineFactor)
                     .setX(player.getPosition().getX() * tileSize)
                     .setY(player.getPosition().getY() * tileSize + (VIEWER_HEIGHT - height * tileSize))
-                    .setZIndex(1);
+                    .setZIndex(3);
 
             player.infos = graphicEntityModule.createText()
+                    .setZIndex(4)
                     .setAnchor(-1);
 
             //TODO: change depending on teams/individual
@@ -128,6 +127,18 @@ public class Referee extends AbstractReferee {
             y = i / 2;
             x = i % 2;
         }
+
+        int totalPlastic = 0;
+        for (Coordinates pos : tileMap.getCoralPos()) {
+            totalPlastic += tileMap.getPlasticCount(pos);
+        }
+
+        gameManager.addToGameSummary("--- PLAYERS ---");
+        for (Player player : gameManager.getPlayers()) {
+            gameManager.addToGameSummary("Player " + player.getIndex() + ": " + player.getNicknameToken());
+        }
+        gameManager.addToGameSummary("--- INFOS ---");
+        gameManager.addToGameSummary(totalPlastic + " plastic wastes on " + tileMap.getCoralPos().length + " corals.");
 
         renderBackground();
         renderMap();
@@ -137,20 +148,22 @@ public class Referee extends AbstractReferee {
 
     @Override
     public void gameTurn(int turn) {
-//        System.out.println("--- TURN " + turn + " ---");
-
         Player player = gameManager.getPlayer(turn % gameManager.getPlayerCount());
         if (!player.isActive())
             return;
+
+        gameManager.addToGameSummary("The player " + player.getIndex() + " with a score of " + player.getScore() + " :");
 
         /* SEND OXYGEN + SONAR */
         String[] prefix = new String[]{"y+", "x+", "y-", "x-"};
 
         //OXYGEN LEVEL
         player.sendInputLine(player.getOxygenLeft().toString());
+        gameManager.addToGameSummary("- starts his turn with " + player.getOxygenLeft() + " oxygen left");
 
         //PLASTIC COUNT
         player.sendInputLine(Integer.toString(tileMap.getPlasticCount(player.getPosition())));
+        gameManager.addToGameSummary("- has " + tileMap.getPlasticCount(player.getPosition()) + " plastic waste at his position");
 
         // SONAR
         int[] dxs = new int[]{0, 1, 0, -1};
@@ -225,19 +238,26 @@ public class Referee extends AbstractReferee {
                 int dy = Math.max(-player.maxMove[0], Math.min(playerMove.y, player.maxMove[2]));
 
                 player.changePosition(new Coordinates(dx, dy));
-            }
+            } /*else {
+                player.deactivate("Player " + player.getIndex() + " has given a wrong command ! (found '" + outputs.get(0) + "')");
+            }*/
+            gameManager.addToGameSummary("-> executes the command: " + playerMove);
 
-            player.updateOxygen();
-
-            if (player.getOxygenLeft() < 0) {
-                player.setScore(-1);
-                player.deactivate("The player " + player.getIndex() + " has drowned !");
-            }
-
+            int collectedPlastic = 0;
             int plasticAtPlayer = tileMap.getPlasticCount(player.getPosition());
             if (plasticAtPlayer > 0) {
+                collectedPlastic = 1;
                 tileMap.setPlasticCount(player.getPosition(), plasticAtPlayer - 1);
                 player.setScore(player.getScore() + 1);
+            }
+            gameManager.addToGameSummary("- collects " + collectedPlastic + " plastic waste");
+
+            player.updateOxygen();
+            gameManager.addToGameSummary("- ends his turn with " + player.getOxygenLeft() + " oxygen left");
+
+            if (player.getOxygenLeft() < 1) {
+                player.setScore(-1);
+                player.deactivate("The player " + player.getIndex() + " has drowned !");
             }
 
             renderPlayer(player);
@@ -264,7 +284,7 @@ public class Referee extends AbstractReferee {
                             .setX(x * tileSize)
                             .setY(y * tileSize + (VIEWER_HEIGHT - height * tileSize))
                             .setScale((double) tileSize / MAIN_TS_TILE_SIZE)
-                            .setZIndex(0);
+                            .setZIndex(1);
                 }
             }
         }
@@ -332,7 +352,7 @@ public class Referee extends AbstractReferee {
                             .setX(x * tileSize)
                             .setY(y * tileSize + (VIEWER_HEIGHT - height * tileSize))
                             .setFillColor(rgb)
-                            .setZIndex(0)
+                            .setZIndex(2)
             );
         }
     }

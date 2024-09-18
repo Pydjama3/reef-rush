@@ -31,7 +31,11 @@ public class TileMap {
     }
 
     public static TileMap create(int width, int height, Random gameRandom, MapGenerator generator) {
-        generator.init(width, height, gameRandom, PUT_CORAL);
+        try {
+            generator.init(width, height, gameRandom, PUT_CORAL);
+        } catch (Error error) {
+            return create(width, height, gameRandom, generator);
+        }
         return new TileMap(generator.generate(), gameRandom);
     }
 

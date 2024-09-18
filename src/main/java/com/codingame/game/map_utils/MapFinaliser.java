@@ -119,7 +119,12 @@ public class MapFinaliser {
 
         Arrays.sort(orderedConnectedComponents, Comparator.comparingInt(o -> -o.length));
 
-        Coordinates[] biggestArea = orderedConnectedComponents[0];
+        Coordinates[] biggestArea;
+        if (orderedConnectedComponents.length > 0) {
+            biggestArea = orderedConnectedComponents[0];
+        } else {
+            biggestArea = new Coordinates[]{new Coordinates(width / 2, height / 2)};
+        }
 
         Coordinates nearestPoint = biggestArea[new Random().nextInt(biggestArea.length)];
         double minDistance = Double.MAX_VALUE;
