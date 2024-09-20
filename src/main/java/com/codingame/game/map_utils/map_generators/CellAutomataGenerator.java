@@ -106,7 +106,7 @@ public class CellAutomataGenerator implements MapGenerator {
         MapFinaliser.putSpawns(map);
 
         if (putCoral) {
-            MapFinaliser.putCoral(map, gameRandom, CORAL_PROBA);
+            MapFinaliser.putCoralAndBonuses(map, gameRandom, CORAL_PROBA);
         }
 
         return map;

@@ -7,7 +7,7 @@ import static com.codingame.game.Constants.*;
 public class MapFinaliser {
     private static final int BG_VALUE = WALL_VALUE;
 
-    public static void putCoral(int[][] map, Random gameRandom, float percent) {
+    public static void putCoralAndBonuses(int[][] map, Random gameRandom, float percent) {
         for (int x = 0; x < map[0].length / 2; x++) {
             for (int y = 0; y < map.length; y++) {
                 if (map[y][x] == HOLLOW_VALUE && gameRandom.nextFloat() < percent) {
@@ -43,7 +43,7 @@ public class MapFinaliser {
                 int[] dxs = new int[]{-1, 0, 1, 0}; // {...}
                 int[] dys = new int[]{0, -1, 0, 1}; // {...}
 
-                for (int i = 0; i < 2 /*dxs.length*/; i++) {
+                for (int i = 0; i < 2; i++) {
                     int dx = dxs[i];
                     int dy = dys[i];
 
@@ -164,6 +164,10 @@ public class MapFinaliser {
                 map[pathY][width - pathX - 1] = 0;
             }
         }
+    }
+
+    public static void putBonuses(int[][] map) {
+
     }
 
     private static int min(int[] array) {
