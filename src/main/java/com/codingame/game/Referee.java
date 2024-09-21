@@ -15,6 +15,7 @@ import com.codingame.gameengine.module.entities.Text;
 import com.google.inject.Inject;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -152,17 +153,17 @@ public class Referee extends AbstractReferee {
         if (!player.isActive())
             return;
 
-        gameManager.addToGameSummary("The player " + player.getIndex() + " with a score of " + player.getScore() + " :");
+        gameManager.addToGameSummary(player.getNicknameToken() + " with a score of " + player.getScore() + " :");
 
         /* SEND OXYGEN + SONAR */
         String[] prefix = new String[]{"y+", "x+", "y-", "x-"};
 
         //OXYGEN LEVEL
-        player.sendInputLine(player.getOxygenLeft().toString());
+        player.sendInputLine(String.valueOf(player.getOxygenLeft()));
         gameManager.addToGameSummary("- starts his turn with " + player.getOxygenLeft() + " oxygen left");
 
         //PLASTIC COUNT
-        player.sendInputLine(Integer.toString(tileMap.getPlasticCount(player.getPosition())));
+        player.sendInputLine(String.valueOf(tileMap.getPlasticCount(player.getPosition())));
         gameManager.addToGameSummary("- has " + tileMap.getPlasticCount(player.getPosition()) + " plastic waste at his position");
 
         // SONAR
@@ -171,35 +172,32 @@ public class Referee extends AbstractReferee {
 
         int[] maxMove = new int[prefix.length];
 
+        int[][] furthestInDirections = new int[prefix.length][];
+
+        Player otherPlayer = gameManager.getPlayer((turn + 1) % gameManager.getPlayerCount());
+        Coordinates difference = otherPlayer.getPosition().subtract(player.getPosition());
+
         for (int i = 0; i < prefix.length; i++) {
             int[] furthestInDirection = tileMap.getFurthestInDirection(player.getPosition(), dxs[i], dys[i]);
 
-            for (Player otherPlayer : gameManager.getPlayers()) {
-                if (otherPlayer == player)
-                    continue;
+            if (difference.getX() == 0 || difference.getY() == 0) {
+                if ((dxs[i] * difference.getX() > 0 && dys[i] * difference.getY() == 0) || (dys[i] * difference.getY() > 0 && dxs[i] * difference.getX() == 0)) {
+                    double distance = player.getPosition().distanceTo(otherPlayer.getPosition());
 
-                Coordinates otherPlayerPosition = otherPlayer.getPosition();
-                Coordinates playerPosition = player.getPosition();
-
-                if (playerPosition.getX() == otherPlayerPosition.getX() || playerPosition.getY() == otherPlayerPosition.getY()) {
-                    double distance = playerPosition.distanceTo(otherPlayerPosition);
                     if (distance < furthestInDirection[1]) {
                         furthestInDirection[0] = SUBMARINE_VALUE;
-                        furthestInDirection[1] = (int) distance;
+                        furthestInDirection[1] = (int) distance - 1;
                     }
                 }
             }
 
-            if (furthestInDirection[0] == WALL_VALUE || furthestInDirection[0] == SUBMARINE_VALUE || furthestInDirection[0] == SURFACE_VALUE) {
+            if (furthestInDirection[0] != HOLLOW_VALUE && furthestInDirection[0] != CORAL_VALUE) {
                 if (furthestInDirection[1] == 0) {
                     maxMove[i] = 0;
                 } else {
                     maxMove[i] = 1;
                 }
             }
-
-            player.setMaxMove(maxMove);
-
 
             String furthestObject = furthestInDirection[0] == WALL_VALUE ? "WALL" :
                     furthestInDirection[0] == SUBMARINE_VALUE ? "SUBMARINE" :
@@ -208,6 +206,8 @@ public class Referee extends AbstractReferee {
             player.sendInputLine(
                     prefix[i] + "=" + furthestObject + "(" + furthestInDirection[1] + "m)"
             );
+
+            furthestInDirections[i] = furthestInDirection;
 
             /* Sonar:
              *    1
@@ -224,7 +224,13 @@ public class Referee extends AbstractReferee {
             // x-=<block type [coral, wall, none]> <distance>
         }
 
+        player.setMaxMove(maxMove);
+
         player.execute();
+
+        System.out.println(difference);
+        System.out.println(Arrays.toString(maxMove));
+        System.out.println(Arrays.deepToString(furthestInDirections));
 
 
         /* RECEVOIR OUTPUTS + DEPLACER JOUEURS */
@@ -334,7 +340,7 @@ public class Referee extends AbstractReferee {
 
 
     private void renderCorals() {
-        coralValues = new HashMap<Coordinates, Text>();
+        coralValues = new HashMap<>();
 
         for (Coordinates coralPos : tileMap.getCoralPos()) {
             int x = coralPos.getX();

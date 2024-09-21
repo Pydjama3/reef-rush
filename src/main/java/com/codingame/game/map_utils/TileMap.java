@@ -97,7 +97,7 @@ public class TileMap {
 
         int i = 0;
         while (0 <= x + dx * i && x + dx * i < width && 0 <= y + dy * i && y + dy * i < height) {
-            if (simpleMap[y + dy * i][x + dx * i] == WALL_VALUE)
+            if (simpleMap[y + dy * i][x + dx * i] == WALL_VALUE || simpleMap[y + dy * i][x + dx * i] == CORAL_VALUE)
                 break;
 
             i++;
