@@ -184,18 +184,17 @@ public class Referee extends AbstractReferee {
                 if ((dxs[i] * difference.getX() > 0 && dys[i] * difference.getY() == 0) || (dys[i] * difference.getY() > 0 && dxs[i] * difference.getX() == 0)) {
                     double distance = player.getPosition().distanceTo(otherPlayer.getPosition());
 
-                    if (distance < furthestInDirection[1]) {
+                    if (distance <= furthestInDirection[1]) {
                         furthestInDirection[0] = SUBMARINE_VALUE;
                         furthestInDirection[1] = (int) distance - 1;
                     }
                 }
             }
 
+            maxMove[i] = 1;
             if (furthestInDirection[0] != HOLLOW_VALUE && furthestInDirection[0] != CORAL_VALUE) {
                 if (furthestInDirection[1] == 0) {
                     maxMove[i] = 0;
-                } else {
-                    maxMove[i] = 1;
                 }
             }
 
@@ -271,6 +270,7 @@ public class Referee extends AbstractReferee {
 
             // Check validity of the player output and compute the new game state
         } catch (AbstractPlayer.TimeoutException e) {
+            player.setScore(-1);
             player.deactivate("The player " + player.getIndex() + " has timed out !");
         }
 

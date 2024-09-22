@@ -95,7 +95,7 @@ public class TileMap {
         int x = initPos.getX();
         int y = initPos.getY();
 
-        int i = 0;
+        int i = 1;
         while (0 <= x + dx * i && x + dx * i < width && 0 <= y + dy * i && y + dy * i < height) {
             if (simpleMap[y + dy * i][x + dx * i] == WALL_VALUE || simpleMap[y + dy * i][x + dx * i] == CORAL_VALUE)
                 break;
