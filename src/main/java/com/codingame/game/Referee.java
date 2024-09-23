@@ -48,14 +48,16 @@ public class Referee extends AbstractReferee {
 
     @Override
     public void init() {
-        // Initialize your game here.
-        maxOxygenCapacity = MAX_OXYGEN_CAPACITY;
-
+        // Initialize your game here
         int exponent = (gameManager.getLeagueLevel() - 1) /*gameManager.getRandom().nextInt(MAX_MAP_SIZE_EXPONENT - MIN_MAP_SIZE_EXPONENT)*/
                 + MIN_MAP_SIZE_EXPONENT;
 
         width = (int) Math.pow(MAP_IS_POWER_OF, exponent);
         height = (int) Math.pow(MAP_IS_POWER_OF, exponent - 1);
+
+        maxOxygenCapacity = MAX_OXYGEN_CAPACITY + (MAX_OXYGEN_CAPACITY / 2) * (gameManager.getLeagueLevel() - 2);
+
+        gameManager.setMaxTurns(MIN_TURNS + (gameManager.getLeagueLevel() - 1) * TURN_COEFF);
 
         generator = BASE_MAP_GENERATOR;
 

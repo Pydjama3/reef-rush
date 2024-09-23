@@ -63,6 +63,8 @@ public class Constants {
     public static final int MAX_CORAL = 20;
 
     public static final DoubleFunction<Double> CORAL_COUNT_FUNCTION = (x) -> Math.exp(x * Math.log((double) MAX_CORAL / MIN_CORAL)) * MIN_CORAL;
+    public static final int MIN_TURNS = 100;
+    public static final int TURN_COEFF = 200;
 
 
     /* --- PLAYER --- */

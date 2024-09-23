@@ -174,4 +174,4 @@ while True:
     current_pos += move_to_vector[move]
 
     print(mode, file=sys.stderr, flush=True)
-    print("NONE")
+    print(move)
