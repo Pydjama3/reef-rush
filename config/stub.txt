@@ -2,7 +2,7 @@ gameloop
 read oxygen:int 
 read plasticCount:int 
 
-loop 4 read sonnarOutput:string(12)
+loop 4 read sonarOutput:string(12)
 
 
 write NONE | UP | RIGHT | DOWN | LEFT

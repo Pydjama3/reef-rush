@@ -15,10 +15,8 @@ import com.codingame.gameengine.module.entities.Text;
 import com.google.inject.Inject;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.codingame.game.Constants.*;
 
@@ -49,16 +47,32 @@ public class Referee extends AbstractReferee {
     @Override
     public void init() {
         // Initialize your game here
-        int exponent = (gameManager.getLeagueLevel() - 1) /*gameManager.getRandom().nextInt(MAX_MAP_SIZE_EXPONENT - MIN_MAP_SIZE_EXPONENT)*/
-                + MIN_MAP_SIZE_EXPONENT;
+        Properties gameParams = gameManager.getGameParameters();
 
-        width = (int) Math.pow(MAP_IS_POWER_OF, exponent);
-        height = (int) Math.pow(MAP_IS_POWER_OF, exponent - 1);
+        if (gameParams.containsKey("WIDTH") && gameParams.containsKey("HEIGHT")) {
+            width = Integer.parseInt(gameParams.getProperty("WIDTH"));
+            height = Integer.parseInt(gameParams.getProperty("HEIGHT"));
+        } else {
+            int exponent = gameManager.getRandom().nextInt(gameManager.getLeagueLevel()) /*gameManager.getRandom().nextInt(MAX_MAP_SIZE_EXPONENT - MIN_MAP_SIZE_EXPONENT)*/
+                    + MIN_MAP_SIZE_EXPONENT;
 
-        maxOxygenCapacity = MAX_OXYGEN_CAPACITY + (MAX_OXYGEN_CAPACITY / 2) * (gameManager.getLeagueLevel() - 2);
+            width = (int) Math.pow(MAP_IS_POWER_OF, exponent);
+            height = (int) Math.pow(MAP_IS_POWER_OF, exponent - 1);
+        }
 
-        gameManager.setMaxTurns(MIN_TURNS + (gameManager.getLeagueLevel() - 1) * TURN_COEFF);
+        if (gameParams.containsKey("MAX_OXYGEN")) {
+            maxOxygenCapacity = Integer.valueOf(gameParams.getProperty("MAX_OXYGEN"));
+        } else {
+            maxOxygenCapacity = MAX_OXYGEN_CAPACITY + (MAX_OXYGEN_CAPACITY / 2) * (gameManager.getLeagueLevel() - 2);
+        }
 
+        if (gameParams.containsKey("MAX_TURNS")) {
+            gameManager.setMaxTurns(Integer.parseInt(gameParams.getProperty("MAX_TURNS")));
+        } else {
+            gameManager.setMaxTurns(MIN_TURNS + (gameManager.getLeagueLevel() - 1) * TURN_COEFF);
+        }
+
+        // TODO: more "expert parameters" to modify generation
         generator = BASE_MAP_GENERATOR;
 
         tileMap = TileMap.create(width, height, gameManager.getRandom(), generator);

@@ -2,6 +2,7 @@ import sys
 import math
 import random
 
+
 # Auto-generated code below aims at helping you parse
 # the standard input according to the problem statement.
 
@@ -15,6 +16,9 @@ class Vector:
 
     def __add__(self, other):
         return Vector(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other):
+        return Vector(self.x - other.x, self.y - other.y)
 
     def __mul__(self, val):
         return Vector(self.x * val, self.y * val)
@@ -98,31 +102,45 @@ while True:
         print(">", direction, sonar[direction], file=sys.stderr, flush=True)
 
     for direction in sonar:
-        underwater_map[current_pos + direction_to_vector[direction] * (sonar[direction][1] + 1)] = 0 if sonar[direction][0] in ["CORAL", "SUBMARINE"] else 1
+        furthest_pos = current_pos + direction_to_vector[direction] * (sonar[direction][1] + 1)
+        underwater_map[furthest_pos] = 0 if sonar[direction][0] == "CORAL" else 1
 
         if sonar[direction][0] == "CORAL":
-            coral_map[current_pos + direction_to_vector[direction] * (sonar[direction][1]+ 1)] = -1
+            coral_map[furthest_pos] = coral_map.get(furthest_pos, -1)
 
-    print("Map:", file=sys.stderr, flush=True)
-    for coordinates in underwater_map:
-        print(coordinates, underwater_map[coordinates], file=sys.stderr, flush=True)
+        difference = current_pos - furthest_pos
+
+        for x in range(current_pos.x+1, furthest_pos.x, int(math.copysign(1, difference.x))):
+            for y in range(current_pos.y+1, furthest_pos.y, int(math.copysign(1, difference.y))):
+                underwater_map[Vector(x, y)] = 0
+
+    # print("Map:", file=sys.stderr, flush=True)
+    # for coordinates in underwater_map:
+    #     print(coordinates, underwater_map[coordinates], file=sys.stderr, flush=True)
+    # for coordinates in coral_map:
+    #     print(coordinates, coral_map[coordinates], file=sys.stderr, flush=True)
+
+    if oxygen == MAX_OXYGEN:
+        path = []
 
     # MODE TRANSITION
     if mode == "SCOUT":
         for direction in sonar:
-            if sonar[direction][0] == "CORAL":
+            furthest_pos = current_pos + direction_to_vector[direction] * (sonar[direction][1] + 1)
+            if sonar[direction][0] == "CORAL" and abs(coral_map.get(furthest_pos, -1)) > 0:
+                # print(furthest_pos, abs(coral_map.get(furthest_pos, None)), file=sys.stderr, flush=True)
                 mode = "TARGET"
-        if oxygen <= len(path):
+        if oxygen - 1 <= len(path):
             mode = "SURFACE"
     elif mode == "TARGET":
         if plastic_count > 0:
             mode = "COLLECT"
-        if oxygen <= len(path):
+        if oxygen - 1 <= len(path):
             mode = "SURFACE"
     elif mode == "COLLECT":
         if plastic_count == 0:
             mode = "SCOUT"
-        if oxygen <= len(path):
+        if oxygen - 1 <= len(path):
             mode = "SURFACE"
     elif mode == "SURFACE":
         if oxygen == MAX_OXYGEN:
@@ -140,7 +158,6 @@ while True:
         for direction in sonar:
             furthest_direction = furthest_direction + direction_to_vector[direction] * sonar[direction][1] * (2**random.random())
 
-
         if abs(furthest_direction.y) > abs(furthest_direction.x):
             if furthest_direction.y > 0:
                 move = "UP"
@@ -152,18 +169,21 @@ while True:
             else:
                 move = "LEFT"
 
-        path.append(move)
-
     elif mode == "TARGET":
         min_distance = math.inf
-        best_direction = ""
+        best_direction = random.choice(list(direction_to_move.keys()))
         for direction in sonar:
             detected = sonar[direction]
-            if detected[0] == "CORAL":
+            furthest_pos = current_pos + direction_to_vector[direction] * (sonar[direction][1] + 1)
+            if detected[0] == "CORAL" and abs(coral_map.get(furthest_pos, -1)) > 0:
                 if detected[1] < min_distance:
                     min_distance = detected[1]
                     best_direction = direction
+        # print("Target:", best_direction, file=sys.stderr, flush=True)
         move = direction_to_move[best_direction]
+
+    elif mode == "COLLECT":
+        coral_map[current_pos] = plastic_count - 1
 
     elif mode == "SURFACE":
         move = inverted_move[path.pop()]
