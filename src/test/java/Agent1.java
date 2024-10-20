@@ -1,6 +1,3 @@
-import com.codingame.game.Player.Move;
-
-import java.util.Random;
 import java.util.Scanner;
 
 public class Agent1 {
@@ -12,7 +9,7 @@ public class Agent1 {
                 String input = scanner.nextLine();
             }
 
-            System.out.println(Move.values()[new Random().nextInt(5)].code);
+            System.out.println("RIGHT"/*Move.values()[new Random().nextInt(5)].code*/);
         }
     }
 }

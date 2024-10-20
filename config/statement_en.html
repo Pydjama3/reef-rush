@@ -7,10 +7,8 @@
             <span>The Goal</span>
         </h1>
         <div class="statement-goal-content">
-            The aim of this game is to win.
-            <br>
-            <br>
-            For this you'll have to control a submarine to collect plastic waste on corals. Be careful to not drown !
+            <p>The aim of this game is to win.</p>
+            <p>For this you'll have to control a submarine to collect plastic waste on corals. Be careful not to drown !</p>
         </div>
     </div>
     <!-- RULES -->
@@ -21,49 +19,59 @@
         </h1>
         <div>
             <div class="statement-rules-content">
-                The game is played turn by turn.
-                <br> 
-                <br>
-                Your program receives 3 different inputs:
+                <p>The game is played turn by turn.</p>
+                <p>Your program receives 3 different inputs:</p>
                 <ul>
                     <li>Your current oxygen level</li>
                     <li>The amount of plastic waste at your position</li>
                     <li>The output of the sonar onboard your submarine</li>
                 </ul>
-                <br>
-                In response to these information, you need to output a command: <action>NONE</action> (equivalent of no command), <action>UP</action>, <action>RIGHT</action>, <action>DOWN</action>, or <action>LEFT</action>.
-                <br>
-                <br>
-                The game zone works as follows:
+                <p>In response to these inputs, you need to output a command: <action>NONE</action> (equivalent of no command), <action>UP</action>, <action>RIGHT</action>, <action>DOWN</action>, or <action>LEFT</action>.</p>
+                <p>The game zone works as follows:</p>
                 <ul>
                     <li>The game zone is a procedurally generated map in which the players can move</li>
                     <li>The map is a 2d tilemap made out of solid blocks/entities (sand walls, submarines, water surface) and hollow blocks (water, corals).</li>
                     <li>The size of the map is not given</li>
                     <li>The map is always symmetric</li>
-                    <li>The x-coordinates of the increase towards the right, the y-coordinates increase towards the top.
+                    <li>The x-coordinates increase towards the right, the y-coordinates increase towards the top.
                 </ul>
-                <br>
-                The submarine work as follows:
+                <p>The submarines work as follows:</p>
                 <ul>
                     <li>They can't go on solid tiles (sand walls, submarines, water surface) but they can go on corals.</li>
                     <li>They move around and cannot go through other submarines</li>
-                    <li>They automatically collect plastic waste if there is any at their position</li>
-                    <li>Your oxygen level decreases by 1 at each turn if your submarine is under the surface</li>
+                    <li>They automatically collect plastic waste (1 unit each turn) if there is any at their position</li>
+                    <li>Your oxygen level decreases by 1 each turn if your submarine is under the surface</li>
                     <li>They automatically fully replenish their oxygen capacity when at the surface (on the highest row of tiles).</li>
-                </ul>
-                <strong>Victory Conditions:</strong>
-                <ul>
-                    <li>You have more points than your opponent</li>
-                    <li>You are the only active player left</li>
-                </ul>
-                <strong>Defeat Conditions</strong>
-                <ul>
-                    <li>Your bot times out.</li>
-                    <li>You drown (oxygen &leq; 0)</li>
                 </ul>
             </div>
         </div>
     </div>
+    <!-- Victory conditions -->
+<div class="statement-victory-conditions">
+	<div class="icon victory"></div>
+	<div class="blk">
+		<div class="title">Victory Conditions</div>
+		<div class="text">
+			<ul style="padding-top:0; padding-bottom: 0;">
+				<li>You have more points than your opponent.</li>
+				<li>You are the only active player left.</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<!-- Lose conditions -->
+<div class="statement-lose-conditions">
+	<div class="icon lose"></div>
+	<div class="blk">
+		<div class="title">Defeat Conditions</div>
+		<div class="text">
+			<ul style="padding-top:0; padding-bottom: 0;">
+				<li>Your bot times out.</li>
+				<li>You drown (<var>oxygen</var> = 0).</li>
+			</ul>
+		</div>
+	</div>
+</div>
     <!-- EXPERT RULES -->
     <div class="statement-section statement-expertrules">
         <h1>
@@ -71,65 +79,29 @@
             <span>Expert Rules</span>
         </h1>
         <div class="statement-expert-rules-content">
+            <h3>How the game works normally:</h3>
             <ul>
-                <li>The properties WIDTH and HEIGHT allow you define the map's size.</li>
-                <li>WIDTH should be an even number</li>
-                <li>The area of the map shouldn't exceed the area of a 2⁶x2⁵ map</li>
-                <li>The parameter MAX_OXYGEN allows you to define the max oxygen capacity of the submarines during the game</li>
-                <li>The parameter MAX_TURNS allows you to define the number of rounds during which the game will be played</li>
+                <li>The size of the map is 2^<var>n</var> in <var>WIDTH</var> by 2^(<var>n</var>-1) in <var>HEIGHT</var>, with <var>n</var> a random integer betweeen 4 included and the sum of 4 and the league level excluded. For example, if the league level is 1 <var>n</var> = 4; if the league level is 3, <var>n</var>=4, <var>n</var>=5 or <var>n</var>=6</li>
+                <li>The <var>MAX_OXYGEN</var> capacity is defined by the league level: 21 if the league level is 1, 42 if it is 2, and 63 if it is 3</li>
+                <li>The <var>MAX_TURNS</var> (sum of the players' turns) is defined by the league level: 100 if the league level is 1, 300 if it is 2, and 500 if it is 3</li>
+            </ul>
+            <!-- <p>Note: <const>WIDTH</const>, <const>HEIGHT</const>, <const>MAX_OXYGEN</const> and <const>MAX_TURNS</const> are constants in the sense that they are initialized at the start of the game and are never changed after.</p> -->
+            <h3>What you can configure and how:</h3>
+            <ul>
+                <li>The properties <var>WIDTH</var> and <var>HEIGHT</var> allow you define the map's size.</li>
+                <li><var>WIDTH</var> should be an even number</li>
+                <li>The area of the map shouldn't exceed the area of a 2⁶x2⁵ map (approximately the max buffer size)</li>
+                <li>The parameter <var>MAX_OXYGEN</var> allows you to define the max oxygen capacity of the submarines during the game.
+                <li>The parameter <var>MAX_TURNS</var> allows you to define the number of rounds during which the game will be played</li>
             </ul>
         </div>
     </div>
-    <!-- EXAMPLES -->
-    <!-- <div class="statement-section statement-examples">
-        <h1>
-            <span class="icon icon-example">&nbsp;</span>
-            <span>Example</span>
-        </h1>
-
-        <div class="statement-examples-text">
-            A basic situation, an instruction, a result.
-        </div>
-
-    </div> -->
-    <!-- WARNING -->
-    <!-- <div class="statement-section statement-warning">
-        <h1>
-            <span class="icon icon-warning">&nbsp;</span>
-            <span>Note</span>
-        </h1>
-        <div class="statement-warning-content">
-            <b>Don’t forget to run the tests by launching them from the “Test cases” window</b>. You can submit at any
-            time
-            to receive a score against the training validators. <b>You can submit as many times as you like</b>. Your
-            most
-            recent submission will be used for the final ranking.<br>
-            <br>
-            <strong>Warning:</strong> the validation tests used to compute the final score are not the same as the ones
-            used
-            during the event.
-            Hardcoded solutions will not score highly.<br>
-            <br>
-            Don't hesitate to change the viewer's options to help debug your code (<img
-                height="18"
-                src="https://www.codingame.com/servlet/fileservlet?id=3463235186409"
-                style="opacity:.8;background:#20252a;" width="18">).
-        </div>
-    </div> -->
     <!-- PROTOCOL -->
     <div class="statement-section statement-protocol">
         <h1>
             <span class="icon icon-protocol">&nbsp;</span>
             <span>Game Input</span>
         </h1>
-        <!-- Protocol block -->
-        <!-- <div class="blk">
-            <div class="text">The program must first read the initialization data from standard input. Then, provide to
-                the
-                standard output one line with a command (detailed below).
-            </div>
-        </div> -->
-
         <!-- Protocol block -->
         <div class="blk">
             <div class="title">Input</div>
@@ -140,18 +112,14 @@
 
 <p>[<const>y+</const> | <const>x+</const> | <const>y-</const> | <const>x-</const>]<const>=</const>[<const>WALL</const> | <const>SUBMARINE</const> | <const>CORAL</const> | <const>SURFACE</const>]<const>(</const><var>distance</var><const>m)</const></p>
 
-<p><span class="statement-lineno">Line 3: </span>A string <var>y+</var> for data on the block or entity directly [below/above (choose one)] your current position.</p>
+<p><span class="statement-lineno">Line 3: </span>A string <var>y+</var> for data on the block or entity above your current position.</p>
 
-<p><span class="statement-lineno">Line 4: </span>A string <var>x+</var> for data on the block or entity directly to the right of your current position.</p>
+<p><span class="statement-lineno">Line 4: </span>A string <var>x+</var> for data on the block or entity to the right of your current position.</p>
 
-<p><span class="statement-lineno">Line 5: </span>A string <var>y-</var> for data on the block or entity directly [below/above (choose one)] your current position.</p>
+<p><span class="statement-lineno">Line 5: </span>A string <var>y-</var> for data on the block or entity below your current position.</p>
 
-<p><span class="statement-lineno">Line 6: </span>A string <var>x+</var> for data on the block or entity directly to the left of your current position.</p>
-
-                <!-- <p><span class="statement-lineno">Line 3: </span>one string <var>y+</var>, formated this way: <i>y+=[WALL | SUBMARINE | CORAL | SURFACE]([0-2⁷]m)</i></p>
-                <p><span class="statement-lineno">Line 4: </span>one string <var>x+</var>, formated this way: <i>x+=[WALL | SUBMARINE | CORAL | SURFACE]([0-2⁷]m)</i></p>
-                <p><span class="statement-lineno">Line 5: </span>one string <var>y-</var>, formated this way: <i>y-=[WALL | SUBMARINE | CORAL | SURFACE]([0-2⁷]m)</i></p>
-                <p><span class="statement-lineno">Line 6: </span>one string <var>x-</var>, formated this way: <i>x-=[WALL | SUBMARINE | CORAL | SURFACE]([0-2⁷]m)</i></p> -->
+<p><span class="statement-lineno">Line 6: </span>A string <var>x+</var> for data on the block or entity to the left of your current position.</p>
+<p><var>distance</var> indicates the distance of your submarine from the first <const>WALL</const>, <const>SUBMARINE</const>, <const>CORAL</const> or <const>SURFACE</const> in the indicated direction of <const>y+</const>, <const>x+</const>, <const>y-</const> or <const>x-</const>.</p>
             </div>
         </div>
 
@@ -159,8 +127,8 @@
         <div class="blk">
             <div class="title">Output</div>
             <div class="text">
-                <p><span class="statement-lineno">A single line</span> containing one of the following commands (not case sensitive): <action>NONE</action>, <action>UP</action>, <action>RIGHT</action>, <action>DOWN</action>, or <action>LEFT</action>.
-                <br><p>
+                <p><span class="statement-lineno">A single line</span> containing one of the following commands (not case sensitive): <action>NONE</action>, <action>UP</action>, <action>RIGHT</action>, <action>DOWN</action>, or <action>LEFT</action>.</p>
+                <p>Note: outputting an invalid command or a direction which your submarine cannot move to has the same effect as outputting <action>NONE</action>.</p>
             </div>
         </div>
 
@@ -170,7 +138,6 @@
             <div class="text">
 <const>0</const> ≤ <var>oxygen</var> ≤ <const>42</const><br>
                 <const>0</const> ≤ <var>plasticCount</var> ≤ <const>20</const><br>
-                <!-- <const>13</const> ≤ <var>{y+|x+|y-|x-} </var> ≤ <const>18</const><br> -->
                 <const>0</const> ≤ <var>distance</var> ≤ <const>2⁷</const><br>
                 <br>Allotted response time to output
                 is ≤
@@ -188,7 +155,7 @@
                 <h1>Title</h1>
                 <div class="story-text">Story
                     <br>
-                    Totally optional
+                    // TODO: maybe
                 </div>
             </div>
         </div>

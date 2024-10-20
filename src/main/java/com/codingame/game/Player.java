@@ -17,6 +17,8 @@ public class Player extends AbstractMultiplayerPlayer {
     private Integer oxygenLeft;
     private Coordinates position;
 
+    private int maxOxygen;
+
     public Player() {
         super();
 
@@ -28,6 +30,10 @@ public class Player extends AbstractMultiplayerPlayer {
     public int getExpectedOutputLines() {
         // Returns the number of expected lines of outputs for a player
         return 1;
+    }
+
+    public void setMaxOxygen(int maxOxygen) {
+        this.maxOxygen = maxOxygen;
     }
 
     public Integer getOxygenLeft() {
@@ -46,7 +52,7 @@ public class Player extends AbstractMultiplayerPlayer {
         if (position.getY() > 0) {
             changeOxygenLeft(-1);
         } else {
-            setOxygenLeft(Constants.MAX_OXYGEN_CAPACITY);
+            setOxygenLeft(maxOxygen);
         }
     }
 

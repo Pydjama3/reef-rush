@@ -1,175 +1,196 @@
 <div class="statement_back" id="statement_back" style="display:none"></div>
 <div class="statement-body">
-    <!-- GOAL -->
-    <div class="statement-section statement-goal">
-        <h1>
-            <span class="icon icon-goal">&nbsp;</span>
-            <span>Le But</span>
-        </h1>
-        <div class="statement-goal-content">
-            <b>(NOTE: la version française des règles n'est pas à jour...)</b>
-            <br>
-            <br>
-            Le but de ce jeu est de gagner.
-            <br>
-            <br>
-            Pour cela, vous devrez contrôler un sous-marin pour collecter les déchets plastiques sur les coraux. Attention de ne pas vous noyer !
-        </div>
-    </div>
-    <!-- RULES -->
-    <div class="statement-section statement-rules">
-        <h1>
-            <span class="icon icon-rules">&nbsp;</span>
-            <span>Règles</span>
-        </h1>
-        <div>
-            <div class="statement-rules-content">
-                Le jeu se joue tour par tour.
-                <br>
-                <br>
-                Votre programme reçoit 3 informations différentes :
-                <ul>
-                    <li>Votre niveau d'oxygène actuel</li>
-                    <li>La quantité de déchets plastiques à votre poste</li>
-                    <li>La sortie du sonar à bord de votre sous-marin</li>
-                </ul>
-                <br>
-                En réponse à ces informations, vous <b>devrez</b> émettre une commande: none (equivalent of no command), up, right, down, or left.
-                <br>
-                <br>
-                The game zone works as follows:
-                <ul>
-                    <li>L'élément principal du jeu est la carte générée de manière procédurale dans laquelle les joueurs peuvent évoluer</li>
-                    <li>La carte est une carte de tuiles 2D composée de blocs/entités solides (murs de sable, sous-marins, surface de l'eau) et de blocs creux (eau, coraux).</li>
-                    <li>La taille de la carte n'est pas donnée au début du jeu</li>
-                    <li>La carte est toujours symmétrique</li>
-                </ul>
-                <br>
-                Le sous-marin fonctionne comme suit :
-                <ul>
-                    <li>Ils se déplacent et ne peuvent pas traverser d'autres sous-marins</li>
-                    <li>Ils collectent automatiquement les déchets plastiques s'il y en a à leur poste</li>
-                    <li>Votre niveau d'oxygene diminue si vous êtes sous la surface</li>
-                    <li>Ils reconstituent automatiquement leur capacité en oxygène lorsqu'ils sont à la surface</li>
-                </ul>
-                Vous <strong>perdez</strong> si :
-                <ul>
-                    <li>Vous vous trompez.</li>
-                    <li>Vous ne fournissez pas une séquence d'actions valide.</li>
-                    <li>Vous vous noyez (oxygene &lt; 0)</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!-- EXPERT RULES -->
-    <div class="statement-section statement-expertrules">
-        <h1>
-            <span class="icon icon-expertrules">&nbsp;</span>
-            <span>Régles avancées</span>
-        </h1>
-        <div class="statement-expert-rules-content">
-            Si vous comptez exécuter des simulations locales, vous devez le savoir !
-        </div>
-    </div>
-    <!-- EXAMPLES -->
-    <div class="statement-section statement-examples">
-        <h1>
-            <span class="icon icon-example">&nbsp;</span>
-            <span>Exemple</span>
-        </h1>
+	<!-- OBJECTIF -->
+	<div class="statement-section statement-goal">
+		<h1>
+			<span class="icon icon-goal">&nbsp;</span>
+			<span>L'objectif</span>
+		</h1>
+		<div class="statement-goal-content">
+			<p>Le but de ce jeu est de gagner.</p>
+			<p>Pour cela, vous devrez contrôler un sous-marin pour collecter les déchets plastiques sur les coraux.
+				Attention à ne pas vous noyer !</p>
+		</div>
+	</div>
+	<!-- RÈGLES -->
+	<div class="statement-section statement-rules">
+		<h1>
+			<span class="icon icon-rules">&nbsp;</span>
+			<span>Règles</span>
+		</h1>
+		<div>
+			<div class="statement-rules-content">
+				<p>Le jeu se joue tour par tour.</p>
+				<p>Votre programme reçoit 3 entrées différentes :</p>
+				<ul>
+					<li>Votre niveau d'oxygène actuel</li>
+					<li>La quantité de déchets plastiques à votre position</li>
+					<li>La sortie du sonar à bord de votre sous-marin</li>
+				</ul>
+				<p>En réponse à ces entrées, vous devez émettre une commande : <action>NONE</action> (équivalent à
+					aucune commande), <action>UP</action>, <action>RIGHT</action>, <action>DOWN</action> ou <action>LEFT
+					</action>.</p>
+				<p>La zone de jeu fonctionne comme suit :</p>
+				<ul>
+					<li>La zone de jeu est une carte générée de manière procédurale dans laquelle les joueurs peuvent se
+						déplacer</li>
+					<li>La carte est une mosaïque composée de blocs/entités solides (murs de sable,
+						sous-marins, surface de l'eau) et de blocs non-solides (eau, coraux).</li>
+					<li>La taille de la carte n'est pas donnée</li>
+					<li>La carte est toujours symétrique</li>
+					<li>Les coordonnées-x augmentent vers la droite, les coordonnées-y augmentent vers le haut.
+				</ul>
+				<p>Les sous-marins fonctionnent comme suit :</p>
+				<ul>
+					<li>Ils ne peuvent pas aller sur des blocs solides (murs de sable, sous-marins, surface de l'eau)
+						mais ils peuvent aller sur des coraux.</li>
+					<li>Ils se déplacent et ne peuvent pas traverser d'autres sous-marins.</li>
+					<li>Ils collectent automatiquement les déchets plastiques (1 unité à chaque tour) s'il y en a à leur
+						position.</li>
+					<li>Votre niveau d'oxygène diminue de 1 à chaque tour si votre sous-marin est sous la surface.</li>
+					<li>Ils reconstituent automatiquement leur capacité en oxygène lorsqu'ils sont à la surface (sur la
+						rangée de blocs la plus haute).</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!-- Conditions de victoire -->
+	<div class="statement-victory-conditions">
+		<div class="icon victory"></div>
+		<div class="blk">
+			<div class="title">Conditions de victoire</div>
+			<div class="text">
+				<ul style="padding-top:0; padding-bottom: 0;">
+					<li>Vous avez plus de points que votre adversaire.</li>
+					<li>Vous êtes le seul joueur actif restant.</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!-- Conditions de défaite -->
+	<div class="statement-lose-conditions">
+		<div class="icon lose"></div>
+		<div class="blk">
+			<div class="title">Conditions de défaite</div>
+			<div class="text">
+				<ul style="padding-top:0; padding-bottom: 0;">
+					<li>Votre bot ne répond pas.</li>
+					<li>Vous vous noyez (<var>oxygen</var> = 0).</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!-- RÈGLES EXPERT -->
+	<div class="statement-section statement-expertrules">
+		<h1>
+			<span class="icon icon-expertrules">&nbsp;</span>
+			<span>Règles Expert</span>
+		</h1>
+		<div class="statement-expert-rules-content">
+			<h3>Comment fonctionne normalement le jeu :</h3>
+			<ul>
+				<li>La taille de la carte est de 2^<var>n</var> en <var>WIDTH</var> par 2^(<var>n</var>-1) en <var>HEIGHT</var>, avec <var>n</var> un entier aléatoire
+					compris entre 4 inclus et la somme de 4 et du niveau de ligue exclue. Par exemple, si le niveau de
+					ligue est 1 <var>n</var> = 4 ; si le niveau de ligue est 3, <var>n</var>=4, <var>n</var>=5 ou <var>n</var>=6</li>
+				<li>La capacité <var>MAX_OXYGEN</var> est définie par le niveau de ligue : 21 si le niveau de ligue est 1, 42 s'il
+					est 2 et 63 s'il est 3</li>
+				<li>Le <var>MAX_TURNS</var> (somme des tours des joueurs) est défini par le niveau de ligue : 100 si le niveau de
+					ligue est 1, 300 s'il est 2 et 500 s'il est 3</li>
+			</ul>
+			<!-- <p>Note: <const>WIDTH</const>, <const>HEIGHT</const>, <const>MAX_OXYGEN</const> and <const>MAX_TURNS</const> sont des constantes dans le sens qu'elles sont initialisées au début du jeu of the game et qu'elles ne sont jamais modifiées après.</p> -->
+			<h3>Ce que vous pouvez configurer et comment :</h3>
+			<ul>
+				<li>Les propriétés <var>WIDTH</var> et <var>HEIGHT</var> vous permettent de définir la taille de la carte.</li>
+				<li>WIDTH doit être un nombre pair</li>
+				<li>La surface de la carte ne doit pas dépasser la surface d'une carte 2⁶x2⁵ (environ la taille maximale
+					du tampon)</li>
+				<li>Le paramètre <var>MAX_OXYGEN</var> permet de définir la capacité maximale en oxygène des sous-marins pendant la
+					partie.
+				<li>Le paramètre <var>MAX_TURNS</var> permet de définir le nombre de tours pendant lesquels la partie sera jouée
+				</li>
+			</ul>
+		</div>
+	</div>
+	<!-- PROTOCOLE -->
+	<div class="statement-section statement-protocol">
+		<h1>
+			<span class="icon icon-protocol">&nbsp;</span>
+			<span>Entrée de jeu</span>
+		</h1>
 
-        <div class="statement-examples-text">
-            //TODO<br>
-            A basic situation, an instruction, a result.
-        </div>
+		<!-- Bloc de protocole -->
+		<div class="blk">
+			<div class="title">Entrée</div>
+			<div class="text">
+				<p><span class="statement-lineno">Ligne 1 : </span>Un entier <var>oxygen</var>, le niveau d'oxygène
+					actuel</p>
+				<p><span class="statement-lineno">Ligne 2 : </span>Un entier <var>plasticCount</var>, la quantité de
+					plastique à la position du sous-marin</p>
+				<p><span class="statement-lineno"><i>Puis 4 lignes pour la sortie du sonar dans ce format :</i></span>
+				</p>
 
-    </div>
-    <!-- WARNING -->
-    <div class="statement-section statement-warning">
-        <h1>
-            <span class="icon icon-warning">&nbsp;</span>
-            <span>Note</span>
-        </h1>
-        <div class="statement-warning-content">
-            <b>N'oubliez pas de lancer les tests en les lançant depuis la fenêtre « Cas de tests »</b>. Vous pouvez soumettre à tout moment
-            temps
-            pour recevoir un score contre les validateurs de formation. <b>Vous pouvez soumettre autant de fois que vous le souhaitez</b>. Ton
-            la plupart
-            la soumission récente sera utilisée pour le classement final.<br>
-            <br>
-            <strong>Attention :</strong> les tests de validation utilisés pour calculer la note finale ne sont pas les mêmes que ceux
-            utilisé
-            pendant l'événement.
-            Les solutions Harcoded n'obtiendront pas de bons résultats.<br>
-            <br>
-            N'hésitez pas à modifier les options du visualiseur pour vous aider à déboguer votre code (<img
-                height="18"
-                src="https://www.codingame.com/servlet/fileservlet?id=3463235186409"
-                style="opacity:.8;background:#20252a;" width="18">).
-        </div>
-    </div>
-    <!-- PROTOCOL -->
-    <div class="statement-section statement-protocol">
-        <h1>
-            <span class="icon icon-protocol">&nbsp;</span>
-            <span>Entrée du jeu</span>
-        </h1>
-        <!-- Protocol block -->
-        <div class="blk">
-            <div class="text">Le programme doit d'abord lire les données d'initialisation à partir de l'entrée standard. Ensuite, fournissez à
-                le
-                sortie standard une ligne avec une commande (détaillée ci-dessous).
-            </div>
-        </div>
+				<p>[<const>y+</const> | <const>x+</const> | <const>y-</const> | <const>x-</const>]<const>=</const>[
+					<const>WALL</const> | <const>SOUS-MARIN</const> | <const>CORAILLE</const> | <const>SURFACE</const>]
+					<const>(</const><var>distance</var>
+					<const>m)</const>
+				</p>
 
-        <!-- Protocol block -->
-        <div class="blk">
-            <div class="title">Input</div>
-            <div class="text">
-                <p><span class="statement-lineno">Ligne 1 : </span>un int <var>oxygène</var>, le courant</p>
-                <p><span class="statement-lineno">Ligne 2 : </span>un int <var>plasticCount</var>, la quantité de plastique à la position du sous-marin</p>
-                <p><span class="statement-lineno"><i>Puis 4 lignes pour le sonar</i></span></p>
-                <p><span class="statement-lineno">Ligne 3 : </span>une chaîne de charactères <var>y+</var>, formatée de cette façon : <i>y+=[WALL | SUBMARINE | CORAL | SURFACE]([0-2⁷]m)</i></p>
-                <p><span class="statement-lineno">Ligne 4 : </span>une chaîne de charactères <var>x+</var>, formatée de cette façon : <i>x+=[WALL | SUBMARINE | CORAL | SURFACE]([0-2⁷]m)</i></p>
-                <p><span class="statement-lineno">Ligne 5 : </span>une chaîne de charactères <var>y-</var>, formatée de cette façon : <i>y-=[WALL | SUBMARINE | CORAL | SURFACE]([0-2⁷]m)</i></p>
-                <p><span class="statement-lineno">Ligne 6 : </span>une chaîne de charactères <var>x-</var>, formatée de cette façon : <i>x-=[WALL | SUBMARINE | CORAL | SURFACE]([0-2⁷]m)</i></p>
-            </div>
-        </div>
+				<p><span class="statement-lineno">Ligne 3 : </span>Une chaîne <var>y+</var> pour les données sur le bloc
+					ou l'entité au-dessus de votre position actuelle.</p>
 
-        <!-- Protocol block -->
-        <div class="blk">
-            <div class="title">Output</div>
-            <div class="text">
-                <p><span class="statement-lineno">Une seule ligne</span> contenant l'une des commandes suivantes (non sensible à la casse) : NONE, UP, RIGHT, DOWN ou LEFT.
-                <br><p>
-                <br>
-            </div>
-        </div>
+				<p><span class="statement-lineno">Ligne 4 : </span>Une chaîne <var>x+</var> pour les données sur le bloc
+					ou l'entité à droite de votre position actuelle.</p>
 
-        <!-- Protocol block -->
-        <div class="blk">
-            <div class="title">Constraints</div>
-            <const>0</const> ≤ <var>oxygene</var> ≤ <const>42</const><br>
-                <const>0</const> ≤ <var>plasticCount</var> ≤ <const>20</const><br>
-                <const>13</const> ≤ <var>{y+|x+|y-|x-} </var> ≤ <const>18</const><br>
-                <const>0</const> ≤ <var>distance</var> ≤ <const>2⁷</const><br>
-                <br>Temps de réponse alloué à la sortie
-                est ≤
-                <const>2</const>
-                secondes.
-        </div>
-    </div>
-    <!-- STORY -->
-    <div class="statement-story-background">
-        <div class="statement-story-cover"
-             style="background-size: cover; background-image: url(https://www.codingame.com/servlet/fileservlet?id=2210505809934)">
-            <div class="statement-story">
-                <h1>Title</h1>
-                <div class="story-text">Histoire
-                    <br>
-                    Totallement optionnelle
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+				<p><span class="statement-lineno">Ligne 5 : </span>Une chaîne <var>y-</var> pour les données sur le bloc
+					ou l'entité en dessous de votre position actuelle.</p>
+
+				<p><span class="statement-lineno">Ligne 6 : </span>Une chaîne <var>x+</var> pour les données sur le bloc
+					ou l'entité à gauche de votre position actuelle position.</p>
+				<p><var>distance</var> indique la distance de votre sous-marin par rapport au premier <const>WALL</const>,
+					<const>SUBMARINE</const>, <const>CORAL</const> ou <const>SURFACE</const> dans la direction
+					indiquée de <const>y+</const>, <const>x+</const>, <const>y-</const> ou <const>x-</const>.</p>
+
+			</div>
+		</div>
+
+		<!-- Bloc de protocole -->
+		<div class="blk">
+			<div class="title">Sortie</div>
+			<div class="text">
+				<p><span class="statement-lineno">Une seule ligne</span> contenant l'une des commandes suivantes (non
+					sensible à la casse) : <action>NONE</action>, <action>UP</action>, <action>RIGHT</action>, <action>
+						DOWN</action> ou <action>LEFT</action>.</p>
+				<p>Remarque : l'affichage d'une commande non valide ou d'une direction dans laquelle votre sous-marin ne
+					peut pas se déplacer a le même effet que l'affichage de <action>NONE</action>.</p>
+			</div>
+		</div>
+
+		<!-- Bloc de protocole -->
+		<div class="blk">
+			<div class="title">Contraintes</div>
+			<div class="text">
+				<const>0</const> ≤ <var>oxygen</var> ≤ <const>42</const><br>
+				<const>0</const> ≤ <var>plasticCount</var> ≤ <const>20</const><br>
+				<const>0</const> ≤ <var>distance</var> ≤ <const>2⁷</const><br>
+				<br>Le temps de réponse alloué à la sortie
+est ≤
+				<const>2</const>
+				secondes.
+
+			</div>
+		</div>
+	</div>
+	<!-- HISTOIRE -->
+	<div class="statement-story-background">
+		<div class="statement-story-cover"
+			style="background-size: cover; background-image: url(https://www.codingame.com/servlet/fileservlet?id=2210505809934)">
+			<div class="statement-story">
+				<h1>Titre</h1>
+				<div class="story-text">Histoire
+					<br>
+					//TODO: peut-être
+				</div>
+				</div>
+			</div>
+		</div>
+	</div>

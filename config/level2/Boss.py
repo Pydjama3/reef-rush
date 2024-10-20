@@ -62,9 +62,9 @@ move_to_vector = {
     "NONE":Vector(0, 0)
 }
 
-
-MAX_OXYGEN = 42
-
+# INITIALISATION
+init = True
+MAX_OXYGEN = 0
 
 mode = "SCOUT"
 
@@ -76,7 +76,7 @@ coral_map = {}
 
 # game loop
 while True:
-    # RETRIEVE INFOS
+    # RETRIEVE INPUTS
     oxygen = int(input())
     plastic_count = int(input())
     sonar = {}
@@ -93,6 +93,10 @@ while True:
             i+=1
 
         sonar[direction] = (material, int(text_distance))
+
+    if init:
+        MAX_OXYGEN = oxygen
+        init = False
 
 
     print("Oxygen:", oxygen, file=sys.stderr, flush=True)

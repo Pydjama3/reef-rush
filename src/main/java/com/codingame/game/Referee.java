@@ -49,13 +49,13 @@ public class Referee extends AbstractReferee {
         // Initialize your game here
         Properties gameParams = gameManager.getGameParameters();
 
+        int exponent = gameManager.getRandom().nextInt(gameManager.getLeagueLevel()) /*gameManager.getRandom().nextInt(MAX_MAP_SIZE_EXPONENT - MIN_MAP_SIZE_EXPONENT)*/
+                + MIN_MAP_SIZE_EXPONENT;
+
         if (gameParams.containsKey("WIDTH") && gameParams.containsKey("HEIGHT")) {
             width = Integer.parseInt(gameParams.getProperty("WIDTH"));
             height = Integer.parseInt(gameParams.getProperty("HEIGHT"));
         } else {
-            int exponent = gameManager.getRandom().nextInt(gameManager.getLeagueLevel()) /*gameManager.getRandom().nextInt(MAX_MAP_SIZE_EXPONENT - MIN_MAP_SIZE_EXPONENT)*/
-                    + MIN_MAP_SIZE_EXPONENT;
-
             width = (int) Math.pow(MAP_IS_POWER_OF, exponent);
             height = (int) Math.pow(MAP_IS_POWER_OF, exponent - 1);
         }
@@ -116,6 +116,7 @@ public class Referee extends AbstractReferee {
         int x = 0;
         int y = 0;
         for (Player player : gameManager.getActivePlayers()) {
+            player.setMaxOxygen(maxOxygenCapacity);
             player.setOxygenLeft(maxOxygenCapacity);
 
             if (x == 0) {
@@ -176,11 +177,11 @@ public class Referee extends AbstractReferee {
 
         //OXYGEN LEVEL
         player.sendInputLine(String.valueOf(player.getOxygenLeft()));
-        gameManager.addToGameSummary("- starts his turn with " + player.getOxygenLeft() + " oxygen left");
+        gameManager.addToGameSummary("- starts this turn with " + player.getOxygenLeft() + " oxygen left");
 
         //PLASTIC COUNT
         player.sendInputLine(String.valueOf(tileMap.getPlasticCount(player.getPosition())));
-        gameManager.addToGameSummary("- has " + tileMap.getPlasticCount(player.getPosition()) + " plastic waste at his position");
+        gameManager.addToGameSummary("- has " + tileMap.getPlasticCount(player.getPosition()) + " plastic waste at this position");
 
         // SONAR
         int[] dxs = new int[]{0, 1, 0, -1};
@@ -274,7 +275,7 @@ public class Referee extends AbstractReferee {
             gameManager.addToGameSummary("- collects " + collectedPlastic + " plastic waste");
 
             player.updateOxygen();
-            gameManager.addToGameSummary("- ends his turn with " + player.getOxygenLeft() + " oxygen left");
+            gameManager.addToGameSummary("- ends this turn with " + player.getOxygenLeft() + " oxygen left");
 
             if (player.getOxygenLeft() < 1) {
                 player.setScore(-1);

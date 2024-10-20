@@ -45,7 +45,7 @@ public class Constants {
 
     /* --- TERRAIN GENERATION --- */
     public static final int MIN_MAP_SIZE_EXPONENT = 4; // 5;
-    public static final int MAX_MAP_SIZE_EXPONENT = 7;
+    public static final int MAX_MAP_SIZE_EXPONENT = 6;
     public static final int MAP_IS_POWER_OF = 2;
     public static final MapGenerator BASE_MAP_GENERATOR = new BSPAndCAGenerator();
     public static final boolean PUT_CORAL = true;
