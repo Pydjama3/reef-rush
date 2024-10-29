@@ -88,12 +88,24 @@
             <!-- <p>Note: <const>WIDTH</const>, <const>HEIGHT</const>, <const>MAX_OXYGEN</const> and <const>MAX_TURNS</const> are constants in the sense that they are initialized at the start of the game and are never changed after.</p> -->
             <h3>What you can configure and how:</h3>
             <ul>
-                <li>The properties <var>WIDTH</var> and <var>HEIGHT</var> allow you define the map's size.</li>
+                <li>The properties <var>WIDTH</var> and <var>HEIGHT</var> allow you to define the map's size.</li>
                 <li><var>WIDTH</var> should be an even number</li>
                 <li>The area of the map shouldn't exceed the area of a 2⁶x2⁵ map (approximately the max buffer size)</li>
-                <li>The parameter <var>MAX_OXYGEN</var> allows you to define the max oxygen capacity of the submarines during the game.
+                <li>Both WIDTH and HEIGHT should be defined for thoses values to be taken into account</li>
+                <li>Having <var>WIDTH</var> > <var>HEIGHT</var> is recommended for the map to be generated correctly</li> 
+                <li>The parameter <var>MAX_OXYGEN</var> allows you to define the max oxygen capacity of the submarines during the game
                 <li>The parameter <var>MAX_TURNS</var> allows you to define the number of rounds during which the game will be played</li>
             </ul>
+            <p>This is an example of a custom configuration:</p>
+
+            <p><code>
+                WIDTH=20<br>
+                HEIGHT=10<br>
+                MAX_OXYGEN=5<br>
+                MAX_TURNS=30<br>
+            </code></p>
+
+            <p>After <i>EXPERT MODE</i> has been enabled under <i>SETTINGS</i>, enter the custom configuration (like the example above) in the <i>OPTIONS panel (MANUAL)</i>. Then click <i>PLAY MY CODE</i> for the custom parameters to take effect.</p>
         </div>
     </div>
     <!-- PROTOCOL -->
@@ -118,7 +130,7 @@
 
 <p><span class="statement-lineno">Line 5: </span>A string <var>y-</var> for data on the block or entity below your current position.</p>
 
-<p><span class="statement-lineno">Line 6: </span>A string <var>x+</var> for data on the block or entity to the left of your current position.</p>
+<p><span class="statement-lineno">Line 6: </span>A string <var>x-</var> for data on the block or entity to the left of your current position.</p>
 <p><var>distance</var> indicates the distance of your submarine from the first <const>WALL</const>, <const>SUBMARINE</const>, <const>CORAL</const> or <const>SURFACE</const> in the indicated direction of <const>y+</const>, <const>x+</const>, <const>y-</const> or <const>x-</const>.</p>
             </div>
         </div>
